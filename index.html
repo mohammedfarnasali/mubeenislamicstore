@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Mubeen Islamic Store</title>
+<meta name="description" content="A curated catalog of Qurans, prayer mats, attars, tasbih, and Islamic home decor." />
+
+<!-- Tailwind CSS (CDN) -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          cream:   '#FBF7EF',
+          sand:    '#F1E9D8',
+          emerald: { 900:'#0F3D2E', 700:'#155E42', 600:'#1B6E4C', 500:'#2E7D57', 100:'#E3EEE7' },
+          gold:    { 700:'#A9822E', 600:'#C6A15B', 400:'#DDBD82', 100:'#F4E9D4' },
+          ink:     { DEFAULT:'#2B2620', soft:'#6B6154' }
+        },
+        fontFamily: {
+          display: ['"Amiri"', 'serif'],
+          body: ['"Inter"', 'sans-serif']
+        },
+        boxShadow: {
+          soft: '0 8px 30px -12px rgba(15,61,46,0.18)',
+          card: '0 4px 18px -6px rgba(43,38,32,0.12)'
+        }
+      }
+    }
+  }
+</script>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- Fuse.js for typo-tolerant search -->
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+
+<style>
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', sans-serif; background: #FBF7EF; }
+  .font-display { font-family: 'Amiri', serif; }
+
+  /* hide scrollbar for category pill row */
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* signature geometric pattern (8-point star lattice), used sparingly */
+  .geo-pattern {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Cg fill='none' stroke='%23C6A15B' stroke-width='1' opacity='0.35'%3E%3Cpath d='M28 2 L34 14 L48 8 L42 22 L54 28 L42 34 L48 48 L34 42 L28 54 L22 42 L8 48 L14 34 L2 28 L14 22 L8 8 L22 14 Z'/%3E%3C/g%3E%3C/svg%3E");
+    background-repeat: repeat;
+  }
+
+  .cart-drawer { transition: transform 0.35s cubic-bezier(.4,0,.2,1); }
+  .cart-drawer.closed { transform: translateX(100%); }
+
+  .backdrop { transition: opacity 0.3s ease; }
+
+  @keyframes pop { 0%{ transform: scale(1);} 40%{ transform: scale(1.15);} 100%{ transform: scale(1);} }
+  .pop { animation: pop 0.35s ease; }
+
+  @keyframes toast-in { from { opacity:0; transform: translateY(8px);} to { opacity:1; transform: translateY(0);} }
+  .toast-in { animation: toast-in 0.25s ease; }
+
+  input:focus, textarea:focus, button:focus-visible, a:focus-visible {
+    outline: 2px solid #A9822E;
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
+</style>
+</head>
+
+<body class="text-ink antialiased pb-24 lg:pb-0">
+
+<!-- ============ HEADER ============ -->
+<header class="sticky top-0 z-40 bg-cream/95 backdrop-blur border-b border-sand">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="flex items-center justify-between py-3">
+      <a href="#" class="flex items-center gap-2.5 group">
+        <svg width="34" height="34" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+          <circle cx="20" cy="20" r="19" stroke="#155E42" stroke-width="1.5"/>
+          <path d="M24 8a12 12 0 1 0 0 24 10 10 0 1 1 0-24Z" fill="#C6A15B"/>
+        </svg>
+        <div class="leading-tight">
+          <div class="font-display text-xl sm:text-2xl text-emerald-900 tracking-wide">Mubeen Islamic Store</div>
+          <div class="text-[11px] case tracking-[0.16em] text-ink-soft -mt-0.5">Your One-Stop Destination for Islamic Essentials</div>
+        </div>
+      </a>
+
+      <button id="cartBtn" class="relative flex items-center gap-2 rounded-full bg-emerald-900 text-cream pl-4 pr-3.5 py-2.5 text-sm font-semibold shadow-soft hover:bg-emerald-700 transition-colors">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <span class="hidden sm:inline">Cart</span>
+        <span id="cartCount" class="grid place-items-center min-w-[20px] h-5 px-1 rounded-full bg-gold-600 text-emerald-900 text-[11px] font-bold">0</span>
+      </button>
+    </div>
+
+    <!-- Search -->
+    <div class="pb-3">
+      <label for="searchInput" class="sr-only">Search products</label>
+      <div class="relative">
+        <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-soft" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="searchInput" type="text" inputmode="search" placeholder="Search for Quran, Janamaz, Attar…"
+          class="w-full rounded-full border border-sand bg-white/80 py-2.5 pl-10 pr-10 text-sm placeholder:text-ink-soft/70 focus:bg-white transition-colors" />
+        <button id="clearSearch" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-ink-soft hover:text-ink" aria-label="Clear search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Category pills -->
+    <div id="categoryRow" class="flex gap-2 overflow-x-auto no-scrollbar pb-3" role="tablist" aria-label="Product categories"></div>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="relative overflow-hidden bg-emerald-900">
+  <div class="geo-pattern absolute inset-0 opacity-90"></div>
+  <div class="absolute inset-0 bg-gradient-to-b from-emerald-900/40 via-emerald-900/80 to-emerald-900"></div>
+  <div class="relative max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-14 text-center">
+    <p class="text-gold-400 text-xs sm:text-sm uppercase tracking-[0.25em] mb-2">Barakah in every detail</p>
+    <h1 class="font-display text-cream text-2xl sm:text-4xl leading-snug max-w-2xl mx-auto">
+      Qurans, prayer mats, attars &amp; decor — chosen with care for your home and worship.
+    </h1>
+  </div>
+</section>
+
+<!-- ============ MAIN ============ -->
+<main class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+  <div class="flex items-baseline justify-between mb-5">
+    <h2 id="resultsHeading" class="font-display text-xl sm:text-2xl text-emerald-900">All Products</h2>
+    <span id="resultsCount" class="text-sm text-ink-soft"></span>
+  </div>
+
+  <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5"></div>
+
+  <div id="emptyState" class="hidden flex-col items-center justify-center text-center py-16">
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#A9822E" stroke-width="1.5" class="mb-3"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+    <p class="font-display text-lg text-emerald-900">No matches found</p>
+    <p class="text-sm text-ink-soft mt-1">Try a different spelling, or browse another category.</p>
+  </div>
+</main>
+
+<footer class="border-t border-sand mt-10">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8 text-center text-sm text-ink-soft">
+    <p class="font-display text-emerald-900 text-lg mb-1">Noor &amp; Co.</p>
+    <p>Curated Islamic goods, delivered with care. Orders are confirmed by phone after checkout.</p>
+  </div>
+</footer>
+
+<!-- ============ MOBILE STICKY CART BAR ============ -->
+<div id="mobileBar" class="hidden fixed bottom-0 inset-x-0 z-40 lg:hidden">
+  <div class="mx-3 mb-3 rounded-2xl bg-emerald-900 text-cream shadow-soft px-4 py-3 flex items-center justify-between">
+    <div>
+      <div class="text-[11px] text-gold-400 uppercase tracking-wide">Your Cart</div>
+      <div class="font-semibold text-sm"><span id="mobileBarCount">0</span> items · <span id="mobileBarTotal">₹0</span></div>
+    </div>
+    <button id="mobileViewCart" class="rounded-full bg-gold-600 text-emerald-900 font-semibold text-sm px-4 py-2">View Cart</button>
+  </div>
+</div>
+
+<!-- ============ CART DRAWER ============ -->
+<div id="cartOverlay" class="backdrop opacity-0 pointer-events-none fixed inset-0 bg-ink/40 z-50"></div>
+<aside id="cartDrawer" class="cart-drawer closed fixed top-0 right-0 z-50 h-full w-full sm:w-[420px] bg-cream shadow-2xl flex flex-col">
+  <div class="flex items-center justify-between px-5 py-4 border-b border-sand">
+    <h2 class="font-display text-xl text-emerald-900">Your Cart</h2>
+    <button id="closeCart" aria-label="Close cart" class="p-2 rounded-full hover:bg-sand">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+
+  <!-- Cart items view -->
+  <div id="cartView" class="flex-1 overflow-y-auto px-5 py-4">
+    <div id="cartItems" class="space-y-4"></div>
+    <div id="cartEmpty" class="hidden text-center py-16 text-ink-soft">
+      <p class="font-display text-lg text-emerald-900 mb-1">Your cart is empty</p>
+      <p class="text-sm">Add a few blessed essentials to get started.</p>
+    </div>
+  </div>
+
+  <div id="cartFooter" class="border-t border-sand px-5 py-4 space-y-3">
+    <div class="flex items-center justify-between text-sm text-ink-soft">
+      <span>Subtotal</span>
+      <span id="cartSubtotal" class="text-base font-bold text-emerald-900">₹0</span>
+    </div>
+    <p id="minOrderNotice" class="hidden text-xs text-gold-700 bg-gold-100 rounded-lg px-3 py-2 text-center"></p>
+    <button id="checkoutBtn" class="w-full rounded-full bg-emerald-900 text-cream font-semibold py-3 hover:bg-emerald-700 transition-colors disabled:opacity-40" disabled>
+      Proceed to Checkout
+    </button>
+  </div>
+
+  <!-- Checkout form view -->
+  <div id="checkoutView" class="hidden flex-1 overflow-y-auto px-5 py-4">
+    <button id="backToCart" class="flex items-center gap-1.5 text-sm text-emerald-700 font-semibold mb-4">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+      Back to cart
+    </button>
+    <h3 class="font-display text-lg text-emerald-900 mb-4">Delivery Details</h3>
+    <form id="checkoutForm" class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-ink mb-1" for="custName">Full Name</label>
+        <input required id="custName" name="name" type="text" placeholder="e.g. Ahmed Khan"
+          class="w-full rounded-xl border border-sand bg-white px-3.5 py-2.5 text-sm focus:border-emerald-500" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-ink mb-1" for="custPhone">Phone Number</label>
+        <input required id="custPhone" name="phone" type="tel" placeholder="e.g. +91 98765 43210"
+          class="w-full rounded-xl border border-sand bg-white px-3.5 py-2.5 text-sm focus:border-emerald-500" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-ink mb-1" for="custAddress">Full Delivery Address</label>
+        <textarea required id="custAddress" name="address" rows="3" placeholder="House no, street, city, state, PIN code"
+          class="w-full rounded-xl border border-sand bg-white px-3.5 py-2.5 text-sm focus:border-emerald-500"></textarea>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-ink mb-1" for="custNotes">Notes <span class="text-ink-soft font-normal">(optional)</span></label>
+        <textarea id="custNotes" name="notes" rows="2" placeholder="Delivery instructions, gift wrap, etc."
+          class="w-full rounded-xl border border-sand bg-white px-3.5 py-2.5 text-sm focus:border-emerald-500"></textarea>
+      </div>
+
+      <div class="rounded-xl bg-sand/70 px-4 py-3 flex items-center justify-between text-sm">
+        <span class="text-ink-soft">Order total</span>
+        <span id="checkoutTotal" class="font-bold text-emerald-900 text-base">₹0</span>
+      </div>
+
+      <button id="placeOrderBtn" type="submit" class="w-full rounded-full bg-gold-600 text-emerald-900 font-bold py-3 hover:bg-gold-400 transition-colors flex items-center justify-center gap-2">
+        <span id="placeOrderLabel">Place Order</span>
+        <svg id="placeOrderSpinner" class="hidden animate-spin" width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="3" stroke-opacity="0.25"/><path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
+      </button>
+      <p id="checkoutError" class="hidden text-sm text-red-600 text-center"></p>
+    </form>
+  </div>
+</aside>
+
+<!-- ============ SUCCESS MODAL ============ -->
+<div id="successModal" class="hidden fixed inset-0 z-[60] items-center justify-center bg-ink/50 px-4">
+  <div class="bg-cream rounded-2xl shadow-2xl max-w-sm w-full p-7 text-center toast-in">
+    <div class="mx-auto mb-4 w-16 h-16 rounded-full bg-emerald-100 grid place-items-center">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#155E42" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+    </div>
+    <h3 class="font-display text-xl text-emerald-900 mb-1.5">Order Placed Successfully</h3>
+    <p class="text-sm text-ink-soft mb-6">JazakAllah Khair! We've received your order and will contact you shortly to confirm delivery.</p>
+    <button id="closeSuccess" class="w-full rounded-full bg-emerald-900 text-cream font-semibold py-3">Continue Shopping</button>
+  </div>
+</div>
+
+<!-- Toast for "added to cart" -->
+<div id="toast" class="hidden fixed bottom-24 lg:bottom-6 left-1/2 -translate-x-1/2 z-50 bg-emerald-900 text-cream text-sm font-medium px-4 py-2.5 rounded-full shadow-soft toast-in"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ======================================================
+     CONFIGURATION
+  ====================================================== */
+  // Get a free key at https://web3forms.com
+  const WEB3FORMS_ACCESS_KEY = "YOUR_WEB3FORMS_ACCESS_KEY_HERE";
+
+  // Your WhatsApp number in international format, digits only,
+  // no "+", no spaces, no leading 0. Example for India: "919876543210"
+  const WHATSAPP_NUMBER = "8008110796";
+
+  const STORE_NAME = "Mubeen Islamic Store";
+
+  // Minimum order value required to check out (in ₹)
+  const MIN_ORDER_VALUE = 199;
+
+  /* ---------------- State ---------------- */
+  let PRODUCTS = [];
+  let fuse = null;
+  let activeCategory = "All";
+  let searchQuery = "";
+  let cart = loadCart(); // { [productId]: quantity }
+
+  /* ---------------- Elements ---------------- */
+  const el = {
+    categoryRow: document.getElementById('categoryRow'),
+    searchInput: document.getElementById('searchInput'),
+    clearSearch: document.getElementById('clearSearch'),
+    grid: document.getElementById('productGrid'),
+    emptyState: document.getElementById('emptyState'),
+    resultsHeading: document.getElementById('resultsHeading'),
+    resultsCount: document.getElementById('resultsCount'),
+
+    cartBtn: document.getElementById('cartBtn'),
+    cartCount: document.getElementById('cartCount'),
+    cartOverlay: document.getElementById('cartOverlay'),
+    cartDrawer: document.getElementById('cartDrawer'),
+    closeCart: document.getElementById('closeCart'),
+    cartItems: document.getElementById('cartItems'),
+    cartEmpty: document.getElementById('cartEmpty'),
+    cartSubtotal: document.getElementById('cartSubtotal'),
+    cartFooter: document.getElementById('cartFooter'),
+    checkoutBtn: document.getElementById('checkoutBtn'),
+    minOrderNotice: document.getElementById('minOrderNotice'),
+    cartView: document.getElementById('cartView'),
+
+    checkoutView: document.getElementById('checkoutView'),
+    backToCart: document.getElementById('backToCart'),
+    checkoutForm: document.getElementById('checkoutForm'),
+    checkoutTotal: document.getElementById('checkoutTotal'),
+    checkoutError: document.getElementById('checkoutError'),
+    placeOrderBtn: document.getElementById('placeOrderBtn'),
+    placeOrderLabel: document.getElementById('placeOrderLabel'),
+    placeOrderSpinner: document.getElementById('placeOrderSpinner'),
+
+    mobileBar: document.getElementById('mobileBar'),
+    mobileBarCount: document.getElementById('mobileBarCount'),
+    mobileBarTotal: document.getElementById('mobileBarTotal'),
+    mobileViewCart: document.getElementById('mobileViewCart'),
+
+    successModal: document.getElementById('successModal'),
+    closeSuccess: document.getElementById('closeSuccess'),
+    toast: document.getElementById('toast'),
+  };
+
+  /* ---------------- Helpers ---------------- */
+  function formatPrice(n) {
+    return '₹' + Number(n).toLocaleString('en-IN');
+  }
+
+  function loadCart() {
+    try {
+      const raw = localStorage.getItem('noor_cart');
+      return raw ? JSON.parse(raw) : {};
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function saveCart() {
+    localStorage.setItem('noor_cart', JSON.stringify(cart));
+  }
+
+  function cartCountTotal() {
+    return Object.values(cart).reduce((sum, qty) => sum + qty, 0);
+  }
+
+  function cartLineItems() {
+    return Object.entries(cart)
+      .map(([id, qty]) => {
+        const product = PRODUCTS.find(p => p.id === id);
+        return product ? { product, qty } : null;
+      })
+      .filter(Boolean);
+  }
+
+  function cartSubtotalValue() {
+    return cartLineItems().reduce((sum, item) => sum + item.product.price * item.qty, 0);
+  }
+
+  function showToast(message) {
+    el.toast.textContent = message;
+    el.toast.classList.remove('hidden');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => el.toast.classList.add('hidden'), 1600);
+  }
+
+  /* ---------------- Load Products ---------------- */
+  fetch('products.json')
+    .then(res => {
+      if (!res.ok) throw new Error('Failed to load products.json');
+      return res.json();
+    })
+    .then(data => {
+      PRODUCTS = data;
+      fuse = new Fuse(PRODUCTS, {
+        keys: ['name', 'category', 'description'],
+        threshold: 0.4,      // higher = more typo-tolerant
+        distance: 100,
+        ignoreLocation: true,
+        minMatchCharLength: 2,
+      });
+      renderCategories();
+      renderProducts();
+      updateCartUI();
+    })
+    .catch(err => {
+      console.error(err);
+      el.grid.innerHTML = `<p class="col-span-full text-center text-ink-soft py-10">
+        Could not load products. If you're opening this file directly in a browser,
+        please serve it with a local server (e.g. <code>npx serve</code>) — see the setup guide.
+      </p>`;
+    });
+
+  /* ---------------- Categories ---------------- */
+  function renderCategories() {
+    const categories = ['All', ...new Set(PRODUCTS.map(p => p.category))];
+    el.categoryRow.innerHTML = categories.map(cat => `
+      <button
+        class="cat-pill shrink-0 whitespace-nowrap rounded-full border px-4 py-2 text-sm font-medium transition-colors
+          ${cat === activeCategory
+            ? 'bg-emerald-900 border-emerald-900 text-cream'
+            : 'bg-white/70 border-sand text-ink-soft hover:border-emerald-500 hover:text-emerald-700'}"
+        data-cat="${cat}"
+        role="tab"
+        aria-selected="${cat === activeCategory}"
+      >${cat}</button>
+    `).join('');
+
+    el.categoryRow.querySelectorAll('.cat-pill').forEach(btn => {
+      btn.addEventListener('click', () => {
+        activeCategory = btn.dataset.cat;
+        renderCategories();
+        renderProducts();
+      });
+    });
+  }
+
+  /* ---------------- Search + Filter + Render ---------------- */
+  function getFilteredProducts() {
+    let results = PRODUCTS;
+
+    if (searchQuery.trim().length > 0 && fuse) {
+      results = fuse.search(searchQuery.trim()).map(r => r.item);
+    }
+
+    if (activeCategory !== 'All') {
+      results = results.filter(p => p.category === activeCategory);
+    }
+
+    return results;
+  }
+
+  function renderProducts() {
+    const results = getFilteredProducts();
+
+    el.resultsHeading.textContent = searchQuery.trim()
+      ? `Results for "${searchQuery.trim()}"`
+      : (activeCategory === 'All' ? 'All Products' : activeCategory);
+    el.resultsCount.textContent = `${results.length} item${results.length === 1 ? '' : 's'}`;
+
+    if (results.length === 0) {
+      el.grid.classList.add('hidden');
+      el.emptyState.classList.remove('hidden');
+      el.emptyState.classList.add('flex');
+      return;
+    }
+    el.emptyState.classList.add('hidden');
+    el.emptyState.classList.remove('flex');
+    el.grid.classList.remove('hidden');
+
+    el.grid.innerHTML = results.map(productCardHTML).join('');
+
+    el.grid.querySelectorAll('[data-add]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        addToCart(btn.dataset.add);
+        btn.classList.add('pop');
+        const original = btn.innerHTML;
+        btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Added`;
+        setTimeout(() => { btn.innerHTML = original; btn.classList.remove('pop'); }, 900);
+      });
+    });
+  }
+
+  function productCardHTML(p) {
+    return `
+      <article class="group bg-white rounded-2xl shadow-card overflow-hidden flex flex-col">
+        <div class="aspect-square overflow-hidden bg-sand">
+          <img src="${p.image}" alt="${escapeHTML(p.name)}" loading="lazy"
+            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+        </div>
+        <div class="p-3 sm:p-4 flex flex-col flex-1">
+          <span class="text-[10px] uppercase tracking-wide text-gold-700 font-semibold mb-1">${escapeHTML(p.category)}</span>
+          <h3 class="font-semibold text-sm sm:text-[15px] text-ink leading-snug line-clamp-2 mb-1">${escapeHTML(p.name)}</h3>
+          <p class="text-xs text-ink-soft line-clamp-2 mb-3 hidden sm:block">${escapeHTML(p.description)}</p>
+          <div class="mt-auto flex items-center justify-between gap-2">
+            <span class="font-bold text-emerald-900 text-sm sm:text-base">${formatPrice(p.price)}</span>
+            <button data-add="${p.id}"
+              class="flex items-center gap-1.5 rounded-full bg-emerald-900 text-cream text-xs sm:text-sm font-semibold px-3 py-2 hover:bg-emerald-700 transition-colors">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+              Add
+            </button>
+          </div>
+        </div>
+      </article>
+    `;
+  }
+
+  function escapeHTML(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  /* ---------------- Search events ---------------- */
+  let searchDebounce;
+  el.searchInput.addEventListener('input', (e) => {
+    searchQuery = e.target.value;
+    el.clearSearch.classList.toggle('hidden', searchQuery.length === 0);
+    clearTimeout(searchDebounce);
+    searchDebounce = setTimeout(renderProducts, 120);
+  });
+  el.clearSearch.addEventListener('click', () => {
+    searchQuery = '';
+    el.searchInput.value = '';
+    el.clearSearch.classList.add('hidden');
+    renderProducts();
+    el.searchInput.focus();
+  });
+
+  /* ---------------- Cart logic ---------------- */
+  function addToCart(id) {
+    cart[id] = (cart[id] || 0) + 1;
+    saveCart();
+    updateCartUI();
+    const product = PRODUCTS.find(p => p.id === id);
+    showToast(`${product ? product.name : 'Item'} added to cart`);
+  }
+
+  function changeQty(id, delta) {
+    if (!cart[id]) return;
+    cart[id] += delta;
+    if (cart[id] <= 0) delete cart[id];
+    saveCart();
+    updateCartUI();
+  }
+
+  function removeItem(id) {
+    delete cart[id];
+    saveCart();
+    updateCartUI();
+  }
+
+  function updateCartUI() {
+    const count = cartCountTotal();
+    const items = cartLineItems();
+    const subtotal = cartSubtotalValue();
+
+    el.cartCount.textContent = count;
+    el.cartCount.classList.toggle('opacity-0', count === 0);
+
+    // Mobile sticky bar
+    if (count > 0) {
+      el.mobileBar.classList.remove('hidden');
+      el.mobileBarCount.textContent = count;
+      el.mobileBarTotal.textContent = formatPrice(subtotal);
+    } else {
+      el.mobileBar.classList.add('hidden');
+    }
+
+    // Cart drawer contents
+    if (items.length === 0) {
+      el.cartItems.innerHTML = '';
+      el.cartEmpty.classList.remove('hidden');
+      el.checkoutBtn.disabled = true;
+    } else {
+      el.cartEmpty.classList.add('hidden');
+      el.cartItems.innerHTML = items.map(({ product, qty }) => `
+        <div class="flex gap-3 items-start">
+          <img src="${product.image}" alt="${escapeHTML(product.name)}" class="w-16 h-16 rounded-xl object-cover bg-sand shrink-0" />
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-semibold text-ink leading-snug line-clamp-2">${escapeHTML(product.name)}</p>
+            <p class="text-sm font-bold text-emerald-900 mt-0.5">${formatPrice(product.price)}</p>
+            <div class="flex items-center gap-2 mt-2">
+              <button data-qty-minus="${product.id}" class="w-7 h-7 grid place-items-center rounded-full border border-sand text-ink-soft hover:border-emerald-500 hover:text-emerald-700">−</button>
+              <span class="w-6 text-center text-sm font-semibold">${qty}</span>
+              <button data-qty-plus="${product.id}" class="w-7 h-7 grid place-items-center rounded-full border border-sand text-ink-soft hover:border-emerald-500 hover:text-emerald-700">+</button>
+              <button data-remove="${product.id}" class="ml-auto text-xs text-red-500 hover:underline">Remove</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      el.cartItems.querySelectorAll('[data-qty-plus]').forEach(b => b.addEventListener('click', () => changeQty(b.dataset.qtyPlus, 1)));
+      el.cartItems.querySelectorAll('[data-qty-minus]').forEach(b => b.addEventListener('click', () => changeQty(b.dataset.qtyMinus, -1)));
+      el.cartItems.querySelectorAll('[data-remove]').forEach(b => b.addEventListener('click', () => removeItem(b.dataset.remove)));
+    }
+
+    el.cartSubtotal.textContent = formatPrice(subtotal);
+    el.checkoutTotal.textContent = formatPrice(subtotal);
+
+    // Minimum order enforcement
+    const belowMinimum = items.length > 0 && subtotal < MIN_ORDER_VALUE;
+    el.checkoutBtn.disabled = items.length === 0 || belowMinimum;
+    if (belowMinimum) {
+      el.minOrderNotice.textContent = `Add ${formatPrice(MIN_ORDER_VALUE - subtotal)} more to reach the ₹${MIN_ORDER_VALUE} minimum order value.`;
+      el.minOrderNotice.classList.remove('hidden');
+    } else {
+      el.minOrderNotice.classList.add('hidden');
+    }
+  }
+
+  /* ---------------- Cart drawer open/close ---------------- */
+  function openCart() {
+    el.cartDrawer.classList.remove('closed');
+    el.cartOverlay.classList.remove('opacity-0', 'pointer-events-none');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeCartDrawer() {
+    el.cartDrawer.classList.add('closed');
+    el.cartOverlay.classList.add('opacity-0', 'pointer-events-none');
+    document.body.style.overflow = '';
+    showCartView();
+  }
+
+  el.cartBtn.addEventListener('click', openCart);
+  el.mobileViewCart.addEventListener('click', openCart);
+  el.closeCart.addEventListener('click', closeCartDrawer);
+  el.cartOverlay.addEventListener('click', closeCartDrawer);
+
+  /* ---------------- Checkout view toggle ---------------- */
+  function showCheckoutView() {
+    el.cartView.classList.add('hidden');
+    el.cartFooter.classList.add('hidden');
+    el.checkoutView.classList.remove('hidden');
+    el.checkoutView.classList.add('flex', 'flex-col');
+  }
+  function showCartView() {
+    el.checkoutView.classList.add('hidden');
+    el.cartView.classList.remove('hidden');
+    el.cartFooter.classList.remove('hidden');
+    el.checkoutError.classList.add('hidden');
+  }
+
+  el.checkoutBtn.addEventListener('click', () => {
+    if (cartCountTotal() === 0 || cartSubtotalValue() < MIN_ORDER_VALUE) return;
+    showCheckoutView();
+  });
+  el.backToCart.addEventListener('click', showCartView);
+
+  /* ---------------- Checkout submit (Web3Forms) ---------------- */
+  el.checkoutForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    el.checkoutError.classList.add('hidden');
+
+    const items = cartLineItems();
+    if (items.length === 0) return;
+
+    const subtotal = cartSubtotalValue();
+    if (subtotal < MIN_ORDER_VALUE) {
+      el.checkoutError.textContent = `Minimum order value is ₹${MIN_ORDER_VALUE}. Please add more items to continue.`;
+      el.checkoutError.classList.remove('hidden');
+      return;
+    }
+
+    const name = document.getElementById('custName').value.trim();
+    const phone = document.getElementById('custPhone').value.trim();
+    const address = document.getElementById('custAddress').value.trim();
+    const notes = document.getElementById('custNotes').value.trim();
+
+    const orderLines = items.map(({ product, qty }) =>
+      `• ${product.name}  ×${qty}  —  ${formatPrice(product.price * qty)}`
+    ).join('\n');
+
+    const orderSummary =
+`New order from ${STORE_NAME}
+
+Customer: ${name}
+Phone: ${phone}
+Address: ${address}
+Notes: ${notes || '—'}
+
+Items:
+${orderLines}
+
+Order Total: ${formatPrice(subtotal)}`;
+
+    // Open WhatsApp with the order pre-filled, addressed to the store's number.
+    // This must happen synchronously (before any "await") so browsers don't
+    // block it as a popup — it's tied directly to the customer's click.
+    if (WHATSAPP_NUMBER && WHATSAPP_NUMBER !== 'YOUR_WHATSAPP_NUMBER_HERE') {
+      const waText = encodeURIComponent(orderSummary);
+      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${waText}`, '_blank');
+    }
+
+    setPlacingState(true);
+
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_ACCESS_KEY,
+          subject: `New Order — ${STORE_NAME}`,
+          from_name: STORE_NAME,
+          name,
+          phone,
+          address,
+          notes,
+          order_summary: orderSummary,
+          message: orderSummary,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        cart = {};
+        saveCart();
+        updateCartUI();
+        el.checkoutForm.reset();
+        closeCartDrawer();
+        el.successModal.classList.remove('hidden');
+        el.successModal.classList.add('flex');
+      } else {
+        throw new Error(result.message || 'Something went wrong. Please try again.');
+      }
+    } catch (err) {
+      console.error(err);
+      el.checkoutError.textContent = 'Could not place your order. Please check your connection and try again.';
+      el.checkoutError.classList.remove('hidden');
+    } finally {
+      setPlacingState(false);
+    }
+  });
+
+  function setPlacingState(isPlacing) {
+    el.placeOrderBtn.disabled = isPlacing;
+    el.placeOrderLabel.textContent = isPlacing ? 'Placing your order…' : 'Place Order';
+    el.placeOrderSpinner.classList.toggle('hidden', !isPlacing);
+  }
+
+  el.closeSuccess.addEventListener('click', () => {
+    el.successModal.classList.add('hidden');
+    el.successModal.classList.remove('flex');
+  });
+
+})();
+</script>
+</body>
+</html>

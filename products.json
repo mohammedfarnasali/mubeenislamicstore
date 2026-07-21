@@ -1,0 +1,190 @@
+[
+  {
+    "id": "qr-001",
+    "name": "Al-Quran Al-Kareem – Deluxe Leather Bound (Arabic/English)",
+    "price": 2499,
+    "category": "Quran",
+    "description": "A beautifully bound Mushaf with side-by-side Arabic text and English translation, gold-embossed cover, gilded page edges, and a ribbon bookmark. Ideal for daily recitation or as a meaningful gift.",
+    "image": "https://picsum.photos/seed/quran-deluxe/600/600"
+  },
+  {
+    "id": "qr-002",
+    "name": "Pocket Quran – Compact Travel Edition",
+    "price": 899,
+    "category": "Quran",
+    "description": "Lightweight, compact Mushaf sized for travel bags and pockets. Clear Uthmani script on premium off-white paper with a soft, durable cover.",
+    "image": "https://picsum.photos/seed/quran-pocket/600/600"
+  },
+  {
+    "id": "qr-003",
+    "name": "Quran with Tajweed Rules (Color-Coded)",
+    "price": 1799,
+    "category": "Quran",
+    "description": "Color-coded Tajweed markings help you recite with correct pronunciation and rules. Large, easy-to-read font, perfect for learners of all ages.",
+    "image": "https://picsum.photos/seed/quran-tajweed/600/600"
+  },
+  {
+    "id": "qr-004",
+    "name": "Quran with Tajweed Rules (Color-Coded)",
+    "price": 1799,
+    "category": "Quran",
+    "description": "Color-coded Tajweed markings help you recite with correct pronunciation and rules. Large, easy-to-read font, perfect for learners of all ages.",
+    "image": "https://picsum.photos/seed/quran-tajweed/600/600"
+  },
+
+ 
+  {
+    "id": "jn-001",
+    "name": "Turkish Velvet Janamaz – Emerald Green",
+    "price": 1299,
+    "category": "Janamaz",
+    "description": "Plush, cushioned velvet prayer mat woven with a traditional mihrab (arch) motif. Non-slip backing and generous padding for comfortable daily salah.",
+    "image": "https://picsum.photos/seed/janamaz-green/600/600"
+  },
+  {
+    "id": "jn-002",
+    "name": "Foldable Travel Prayer Mat with Compass",
+    "price": 749,
+    "category": "Janamaz",
+    "description": "Compact, water-resistant prayer mat that folds into a slim pouch with a built-in Qibla compass — perfect for travel, office, or outdoor prayers.",
+    "image": "https://picsum.photos/seed/janamaz-travel/600/600"
+  },
+  {
+    "id": "jn-003",
+    "name": "Kids' Janamaz Set – Learn to Pray",
+    "price": 999,
+    "category": "Janamaz",
+    "description": "A soft, colourful prayer mat sized for children, paired with an illustrated guide to help them learn the steps of salah.",
+    "image": "https://picsum.photos/seed/janamaz-kids/600/600"
+  },
+  
+  {
+    "id": "jn-003",
+    "name": "Kids' Janamaz Set – Learn to Pray",
+    "price": 999,
+    "category": "Farnas",
+    "description": "A soft, colourful prayer mat sized for children, paired with an illustrated guide to help them learn the steps of salah.",
+    "image": "https://picsum.photos/seed/janamaz-kids/600/600"
+  },
+
+
+
+
+  {
+    "id": "at-001",
+    "name": "Musk Al-Haramain Attar – 12ml Alcohol-Free",
+    "price": 1150,
+    "category": "Perfumes & Attar",
+    "description": "A rich, long-lasting musk-based attar with warm oud undertones. Alcohol-free and safe to wear during prayer. Comes in a roll-on glass bottle.",
+    "image": "https://picsum.photos/seed/attar-musk/600/600"
+  },
+  {
+    "id": "at-002",
+    "name": "Rose & Oud Attar Gift Set (3 x 6ml)",
+    "price": 1699,
+    "category": "Perfumes & Attar",
+    "description": "A trio of premium rose, oud, and sandalwood attars in a gift-ready box — a thoughtful present for Eid, weddings, or any special occasion.",
+    "image": "https://picsum.photos/seed/attar-giftset/600/600"
+  },
+  {
+    "id": "at-003",
+    "name": "Zamzam-Inspired Amber Attar – 6ml",
+    "price": 599,
+    "category": "Perfumes & Attar",
+    "description": "A warm, amber-forward fragrance with soft spice notes. Long-lasting and gentle on the skin, perfect for everyday wear.",
+    "image": "https://picsum.photos/seed/attar-amber/600/600"
+  },
+  {
+    "id": "ts-001",
+    "name": "99-Bead Wooden Tasbih – Sandalwood",
+    "price": 449,
+    "category": "Tasbih",
+    "description": "Handcrafted 99-bead tasbih carved from fragrant sandalwood, strung on a durable cord with a decorative tassel. Naturally soothing scent.",
+    "image": "https://picsum.photos/seed/tasbih-wood/600/600"
+  },
+  {
+    "id": "ts-002",
+    "name": "Digital Tasbih Counter – Rechargeable",
+    "price": 699,
+    "category": "Tasbih",
+    "description": "A sleek digital dhikr counter with a bright display, memory function, and USB rechargeable battery. Slim enough to carry anywhere.",
+    "image": "https://picsum.photos/seed/tasbih-digital/600/600"
+  },
+  {
+    "id": "ts-003",
+    "name": "Crystal Quartz Tasbih – 33 Beads",
+    "price": 899,
+    "category": "Tasbih",
+    "description": "Elegant 33-bead tasbih made from polished crystal quartz, finished with a gold-tone tassel. A refined piece for daily dhikr.",
+    "image": "https://picsum.photos/seed/tasbih-crystal/600/600"
+  },
+  {
+    "id": "dc-001",
+    "name": "Ayatul Kursi Metal Wall Art – Gold Finish",
+    "price": 2199,
+    "category": "Home Decor",
+    "description": "Elegant laser-cut metal calligraphy panel of Ayatul Kursi in a warm gold finish, ready to hang. A striking centrepiece for any room.",
+    "image": "https://picsum.photos/seed/decor-ayatulkursi/600/600"
+  },
+  {
+    "id": "dc-002",
+    "name": "Moroccan-Style Islamic Lantern",
+    "price": 1349,
+    "category": "Home Decor",
+    "description": "Hand-finished metal lantern with intricate cut-out geometric patterns that cast beautiful light shadows. Battery candle included.",
+    "image": "https://picsum.photos/seed/decor-lantern/600/600"
+  },
+  {
+    "id": "dc-003",
+    "name": "99 Names of Allah Canvas Print",
+    "price": 1599,
+    "category": "Home Decor",
+    "description": "A minimalist canvas print featuring the 99 Names of Allah (Asma-ul-Husna) in elegant calligraphy, framed and ready to hang.",
+    "image": "https://picsum.photos/seed/decor-99names/600/600"
+  },
+  {
+    "id": "ac-001",
+    "name": "Embroidered Kufi Prayer Cap",
+    "price": 399,
+    "category": "Accessories",
+    "description": "Soft, breathable cotton kufi cap with fine embroidered detailing, available in a comfortable one-size-fits-most fit.",
+    "image": "https://picsum.photos/seed/kufi-cap/600/600"
+  },
+  {
+    "id": "ac-002",
+    "name": "Islamic Gift Box – Quran, Attar & Tasbih Set",
+    "price": 2999,
+    "category": "Accessories",
+    "description": "A curated gift set featuring a pocket Quran, a 6ml attar, and a wooden tasbih, packaged in a decorative keepsake box — perfect for Eid or Ramadan gifting.",
+    "image": "https://picsum.photos/seed/gift-box/600/600"
+  },
+  
+
+  {
+    "id": "mis-001",
+    "name":"Vacuum –Packed Natural Miswak",
+    "price": 29,
+    "category": "Miswak",
+    "description": "Freshly cut, vacuum-sealed Miswak. 100% natural twig that brightens teeth, strengthens gums and revives Sunnah.",
+    "image": "images/vaccumed miswak.jpg"
+  },
+
+  {
+    "id": "mis-002",
+    "name":"Zaitoon –Natural Miswak",
+    "price": 49,
+    "category": "Miswak",
+    "description": "Traditional Olive wood Miswak. Naturally cleans teeth, strengthens gums, and promotes daily Sunnah oral hygiene.",
+    "image": "images/zaitoon miswak.jpg"
+  },
+
+  {
+    "id": "mis-003",
+    "name":"Natural Loose Miswak",
+    "price": 18,
+    "category": "Miswak",
+    "description": "Natural loose Miswak twig. Traditional chemical-free toothbrush that brightens teeth, strengthens gums & Sunnah.",
+    "image": "images/loose miswak.jpg"
+  }
+
+]
