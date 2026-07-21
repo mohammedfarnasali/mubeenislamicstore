@@ -185,6 +185,15 @@
     "category": "Miswak",
     "description": "Natural loose Miswak twig. Traditional chemical-free toothbrush that brightens teeth, strengthens gums & Sunnah.",
     "image": "images/loose miswak.jpg"
+  },
+
+   {
+    "id": "mis-003",
+    "name":"Natural Loose Miswak",
+    "price": 18,
+    "category": "Miswak",
+    "description": "Natural loose Miswak twig. Traditional chemical-free toothbrush that brightens teeth, strengthens gums & Sunnah.",
+    "image": "images/loose miswak.jpg"
   }
 
 ]
