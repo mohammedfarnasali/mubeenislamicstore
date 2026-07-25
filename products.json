@@ -86,11 +86,11 @@
   },
   {
     "id": "ts-001",
-    "name": "99-Bead Wooden Tasbih – Sandalwood",
-    "price": 449,
+    "name": "99-Bead Blue Crystal Tasbih",
+    "price": 99,
     "category": "Tasbih",
-    "description": "Handcrafted 99-bead tasbih carved from fragrant sandalwood, strung on a durable cord with a decorative tassel. Naturally soothing scent.",
-    "image": "https://picsum.photos/seed/tasbih-wood/600/600"
+    "description": "=====",
+    "image": "images/blueCrystalTasbhe.png"
   },
   {
     "id": "ts-002",
