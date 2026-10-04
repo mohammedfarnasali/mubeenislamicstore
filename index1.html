@@ -125,7 +125,7 @@
   <div class="absolute inset-0 bg-gradient-to-b from-emerald-900/40 via-emerald-900/80 to-emerald-900"></div>
   <div class="relative max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-14 text-center">
     <p class="text-gold-400 text-xs sm:text-sm uppercase tracking-[0.25em] mb-2">Barakah in every detail</p>
-     <h4 class="font-display text-cream text-2x4 sm:text-4x4 leading-snug max-w-2x3 mx-auto">
+    <h4 class="font-display text-cream text-2xl sm:text-4xl leading-snug max-w-2xl mx-auto">
       Quran, Parey, Rehal Box, Seerat, Hadees
       Janimaz, Topi, Tasbih, Miswak, Attar & Surma
       Dastarkhan, Masjid Carpets & Arabic Stickers
@@ -279,7 +279,6 @@
   let activeCategory = "All";
   let searchQuery = "";
   let cart = loadCart(); // { [productId]: quantity }
-  let sharedProductId = new URLSearchParams(location.search).get('product');
 
   /* ---------------- Elements ---------------- */
   const el = {
@@ -410,7 +409,6 @@
     el.categoryRow.querySelectorAll('.cat-pill').forEach(btn => {
       btn.addEventListener('click', () => {
         activeCategory = btn.dataset.cat;
-        sharedProductId = null;
         renderCategories();
         renderProducts();
       });
@@ -419,10 +417,6 @@
 
   /* ---------------- Search + Filter + Render ---------------- */
   function getFilteredProducts() {
-    if (sharedProductId) {
-      return PRODUCTS.filter(p => String(p.id) === String(sharedProductId));
-    }
-
     let results = PRODUCTS;
 
     if (searchQuery.trim().length > 0 && fuse) {
@@ -443,16 +437,6 @@
       ? `Results for "${searchQuery.trim()}"`
       : (activeCategory === 'All' ? 'All Products' : activeCategory);
     el.resultsCount.textContent = `${results.length} item${results.length === 1 ? '' : 's'}`;
-
-    if (sharedProductId) {
-      el.resultsHeading.textContent = 'Shared Product';
-      el.resultsCount.innerHTML = '<button id="showAllBtn" class="font-semibold text-emerald-700 underline">View all products</button>';
-      document.getElementById('showAllBtn').addEventListener('click', () => {
-        sharedProductId = null;
-        history.replaceState(null, '', location.pathname);
-        renderProducts();
-      });
-    }
 
     if (results.length === 0) {
       el.grid.classList.add('hidden');
@@ -475,22 +459,14 @@
         setTimeout(() => { btn.innerHTML = original; btn.classList.remove('pop'); }, 900);
       });
     });
-
-    el.grid.querySelectorAll('[data-share]').forEach(btn => {
-      btn.addEventListener('click', () => shareProduct(btn.dataset.share));
-    });
   }
 
   function productCardHTML(p) {
     return `
       <article class="group bg-white rounded-2xl shadow-card overflow-hidden flex flex-col">
-        <div class="relative aspect-square overflow-hidden bg-sand">
+        <div class="aspect-square overflow-hidden bg-sand">
           <img src="${p.image}" alt="${escapeHTML(p.name)}" loading="lazy"
             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-          <button data-share="${p.id}" aria-label="Share ${escapeHTML(p.name)}"
-            class="absolute top-2 right-2 grid place-items-center w-8 h-8 rounded-full bg-white/90 text-emerald-900 shadow-card hover:bg-white">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>
-          </button>
         </div>
         <div class="p-3 sm:p-4 flex flex-col flex-1">
           <span class="text-[10px] uppercase tracking-wide text-gold-700 font-semibold mb-1">${escapeHTML(p.category)}</span>
@@ -518,14 +494,12 @@
   /* ---------------- Search events ---------------- */
   let searchDebounce;
   el.searchInput.addEventListener('input', (e) => {
-    sharedProductId = null;
     searchQuery = e.target.value;
     el.clearSearch.classList.toggle('hidden', searchQuery.length === 0);
     clearTimeout(searchDebounce);
     searchDebounce = setTimeout(renderProducts, 120);
   });
   el.clearSearch.addEventListener('click', () => {
-    sharedProductId = null;
     searchQuery = '';
     el.searchInput.value = '';
     el.clearSearch.classList.add('hidden');
@@ -540,25 +514,6 @@
     updateCartUI();
     const product = PRODUCTS.find(p => p.id === id);
     showToast(`${product ? product.name : 'Item'} added to cart`);
-  }
-
-  /* ---------------- Share a single product ---------------- */
-  async function shareProduct(id) {
-    const p = PRODUCTS.find(x => String(x.id) === String(id));
-    if (!p) return;
-    const url = `${location.origin}/api/p?id=${encodeURIComponent(p.id)}`;
-    const text = `${p.name} - ${formatPrice(p.price)}\n${STORE_NAME}`;
-
-    if (navigator.share) {
-      try { await navigator.share({ title: p.name, text, url }); } catch (e) { /* user cancelled */ }
-      return;
-    }
-    try {
-      await navigator.clipboard.writeText(`${text}\n${url}`);
-      showToast('Product link copied');
-    } catch (e) {
-      window.open(`https://wa.me/?text=${encodeURIComponent(text + '\n' + url)}`, '_blank');
-    }
   }
 
   function changeQty(id, delta) {
@@ -770,23 +725,6 @@ Order Total: ${formatPrice(subtotal)}`;
   });
 
 })();
-
-/*
-Make a product image for Mubeen Islamic Book House using the same modern design as before. Use the photo I uploaded.
-Design:
-Square image, 1080 x 1080 px. Give me a webp
-Background: soft cream gradient (
-#F7F4EC to 
-#E4DDCB).
-Behind the product: a large green circle (gradient 
-#12805A to 
-#0A4A30) with a thin gold ring (
-#C9A227) around it, plus one small gold outline circle at top right and one small soft gold dot at bottom right.
-Product: cut out from its photo background, placed in the center, as large as possible so it is easy to see on small phone screens. Add a soft drop shadow and a soft shadow on the ground under it.
-Top left: "MUBEEN" in small green letter-spaced capitals with a short gold line under it.
-Bottom left: "Mubeen Islamic Book House" in bold dark green sans-serif, then "QURAN • BOOKS • ATTAR • WHOLESALE & RETAIL" in gray capitals, then a green pill with the phone number 6301284561. beside write Hanmakonda, Warangal, Ts
-Keep the text clear of the product, and check that it all looks right before giving it to me. */
-
 </script>
 </body>
 </html>
