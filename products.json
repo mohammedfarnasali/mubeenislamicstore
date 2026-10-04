@@ -1,14 +1,17 @@
 [
-  {
-    "id": "qr-001",
-    "name": "Al-Quran Al-Kareem – Deluxe Leather Bound (Arabic/English)",
-    "price": 2499,
+  {"id": "qr-001","name": "The Holy Quran (Urdu In Roman Script)",
+    "price": 549,
     "category": "Quran",
-    "description": "A beautifully bound Mushaf with side-by-side Arabic text and English translation, gold-embossed cover, gilded page edges, and a ribbon bookmark. Ideal for daily recitation or as a meaningful gift.",
-    "image": "https://picsum.photos/seed/quran-deluxe/600/600"
+    "description": "The Holy Quran with an Urdu translation in Roman script, an easy way to read and understand the Quran if you're comfortable with English letters.",
+    "image": "quran/quran-roman-script-modern.webp"
   },
 
-
+  {"id": "qr-002","name": "Quran Majeed ( No . 126) (15 LINES) (Maplitho)",
+    "price": 399,
+    "category": "Quran",
+    "description": "Quran Majeed (No. 126) in 15-line format on smooth Maplitho paper. Clear print and easy to read, ideal for daily recitation",
+    "image": "quran/quran-126-modern.webp"
+  },
  
   {
     "id": "jn-001",
@@ -16,7 +19,7 @@
     "price": 1299,
     "category": "Janamaz",
     "description": "Plush, cushioned velvet prayer mat woven with a traditional mihrab (arch) motif. Non-slip backing and generous padding for comfortable daily salah.",
-    "image": "https://picsum.photos/seed/janamaz-green/600/600"
+    "image": "images/masnoon-duaen-modern.png"
   },
 
 
