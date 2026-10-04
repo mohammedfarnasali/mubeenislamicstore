@@ -279,6 +279,7 @@
   let activeCategory = "All";
   let searchQuery = "";
   let cart = loadCart(); // { [productId]: quantity }
+  let sharedProductId = new URLSearchParams(location.search).get('product');
 
   /* ---------------- Elements ---------------- */
   const el = {
@@ -409,6 +410,7 @@
     el.categoryRow.querySelectorAll('.cat-pill').forEach(btn => {
       btn.addEventListener('click', () => {
         activeCategory = btn.dataset.cat;
+        sharedProductId = null;
         renderCategories();
         renderProducts();
       });
@@ -417,6 +419,10 @@
 
   /* ---------------- Search + Filter + Render ---------------- */
   function getFilteredProducts() {
+    if (sharedProductId) {
+      return PRODUCTS.filter(p => String(p.id) === String(sharedProductId));
+    }
+
     let results = PRODUCTS;
 
     if (searchQuery.trim().length > 0 && fuse) {
@@ -437,6 +443,16 @@
       ? `Results for "${searchQuery.trim()}"`
       : (activeCategory === 'All' ? 'All Products' : activeCategory);
     el.resultsCount.textContent = `${results.length} item${results.length === 1 ? '' : 's'}`;
+
+    if (sharedProductId) {
+      el.resultsHeading.textContent = 'Shared Product';
+      el.resultsCount.innerHTML = '<button id="showAllBtn" class="font-semibold text-emerald-700 underline">View all products</button>';
+      document.getElementById('showAllBtn').addEventListener('click', () => {
+        sharedProductId = null;
+        history.replaceState(null, '', location.pathname);
+        renderProducts();
+      });
+    }
 
     if (results.length === 0) {
       el.grid.classList.add('hidden');
@@ -459,14 +475,22 @@
         setTimeout(() => { btn.innerHTML = original; btn.classList.remove('pop'); }, 900);
       });
     });
+
+    el.grid.querySelectorAll('[data-share]').forEach(btn => {
+      btn.addEventListener('click', () => shareProduct(btn.dataset.share));
+    });
   }
 
   function productCardHTML(p) {
     return `
       <article class="group bg-white rounded-2xl shadow-card overflow-hidden flex flex-col">
-        <div class="aspect-square overflow-hidden bg-sand">
+        <div class="relative aspect-square overflow-hidden bg-sand">
           <img src="${p.image}" alt="${escapeHTML(p.name)}" loading="lazy"
             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+          <button data-share="${p.id}" aria-label="Share ${escapeHTML(p.name)}"
+            class="absolute top-2 right-2 grid place-items-center w-8 h-8 rounded-full bg-white/90 text-emerald-900 shadow-card hover:bg-white">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>
+          </button>
         </div>
         <div class="p-3 sm:p-4 flex flex-col flex-1">
           <span class="text-[10px] uppercase tracking-wide text-gold-700 font-semibold mb-1">${escapeHTML(p.category)}</span>
@@ -494,12 +518,14 @@
   /* ---------------- Search events ---------------- */
   let searchDebounce;
   el.searchInput.addEventListener('input', (e) => {
+    sharedProductId = null;
     searchQuery = e.target.value;
     el.clearSearch.classList.toggle('hidden', searchQuery.length === 0);
     clearTimeout(searchDebounce);
     searchDebounce = setTimeout(renderProducts, 120);
   });
   el.clearSearch.addEventListener('click', () => {
+    sharedProductId = null;
     searchQuery = '';
     el.searchInput.value = '';
     el.clearSearch.classList.add('hidden');
@@ -514,6 +540,25 @@
     updateCartUI();
     const product = PRODUCTS.find(p => p.id === id);
     showToast(`${product ? product.name : 'Item'} added to cart`);
+  }
+
+  /* ---------------- Share a single product ---------------- */
+  async function shareProduct(id) {
+    const p = PRODUCTS.find(x => String(x.id) === String(id));
+    if (!p) return;
+    const url = `${location.origin}/api/p?id=${encodeURIComponent(p.id)}`;
+    const text = `${p.name} - ${formatPrice(p.price)}\n${STORE_NAME}`;
+
+    if (navigator.share) {
+      try { await navigator.share({ title: p.name, text, url }); } catch (e) { /* user cancelled */ }
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(`${text}\n${url}`);
+      showToast('Product link copied');
+    } catch (e) {
+      window.open(`https://wa.me/?text=${encodeURIComponent(text + '\n' + url)}`, '_blank');
+    }
   }
 
   function changeQty(id, delta) {
