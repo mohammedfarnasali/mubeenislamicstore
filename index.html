@@ -74,6 +74,13 @@
     outline-offset: 2px;
   }
 
+  /* ADDED: banner slider */
+  #bannerTrack { transition: transform 0.55s cubic-bezier(.4,0,.2,1); will-change: transform; }
+  #bannerTrack.dragging { transition: none; }
+  #bannerViewport { touch-action: pan-y; -webkit-user-select: none; user-select: none; cursor: grab; }
+  #bannerViewport.dragging { cursor: grabbing; }
+  .banner-dot { transition: all .25s ease; }
+
   @media (prefers-reduced-motion: reduce) {
     * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
   }
@@ -122,16 +129,25 @@
   </div>
 </header>
 
-<!-- ============ HERO ============ -->
-<section class="relative overflow-hidden bg-emerald-900">
-  <div class="geo-pattern absolute inset-0 opacity-90"></div>
-  <div class="absolute inset-0 bg-gradient-to-b from-emerald-900/40 via-emerald-900/80 to-emerald-900"></div>
-  <div class="relative max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-14 text-center">
-    <p class="text-gold-400 text-xs sm:text-sm uppercase tracking-[0.25em] mb-2">Barakah in every detail</p>
-     <h4 class="font-display text-cream text-2x3 sm:text-4x3 leading-snug max-w-2x3 mx-auto">
-      Quran, Parey, Rehal Box, Seerat, Hadees
-      Janimaz, Topi, Tasbih, Miswak, Attar & Surma
-      Dastarkhan, Masjid Carpets & Arabic Stickers
+<!-- ============ HERO / BANNER SLIDER ============ -->
+<section id="heroBanner" class="relative bg-cream" aria-roledescription="carousel" aria-label="Featured banners">
+  <div class="max-w-6xl mx-auto sm:px-6 sm:py-5">
+    <div id="bannerViewport" class="relative overflow-hidden sm:rounded-2xl shadow-soft bg-emerald-900">
+      <div id="bannerTrack" class="flex"></div>
+
+      <!-- Arrows -->
+      <button id="bannerPrev" aria-label="Previous banner"
+        class="hidden absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-10 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/85 text-emerald-900 shadow-card hover:bg-white items-center justify-center">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+      </button>
+      <button id="bannerNext" aria-label="Next banner"
+        class="hidden absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-10 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/85 text-emerald-900 shadow-card hover:bg-white items-center justify-center">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+      </button>
+
+      <!-- Dots -->
+      <div id="bannerDots" class="absolute bottom-2.5 sm:bottom-4 left-0 right-0 z-10 flex items-center justify-center gap-1.5"></div>
+    </div>
   </div>
 </section>
 
@@ -325,6 +341,53 @@
   const SHOP_ADDRESS = "Masjid-E-Chowk Complex, Near Zubair Book Stall (Left Side Shop), Chowrastha, Hanamkonda, Warangal, Telangana";
   const ORDER_QUOTE = "JazakAllah Khair for shopping with Mubeen Islamic Store. May this purchase bring barakah and ease to you and your family.";
   const ATTACH_PDF_TO_EMAIL = false; // set to true only on a Web3Forms Pro key (file attachments are a Pro feature)
+
+  /* ======================================================
+     ADDED: BANNERS  (add / remove / edit as many as you like)
+     ------------------------------------------------------
+     Each banner is one { ... } block. Copy a block to add a new banner.
+
+     tagline  : small gold text above the title (optional)
+     title    : big heading
+     subtitle : short line under the heading (optional)
+     button   : text on the button (default "Shop Now")
+     image    : background photo, e.g. "banners/ramadan.webp" (optional).
+                Leave "" to get the green geometric design.
+                Best size: 1600 x 640 px (wide). Keep text area dark/plain.
+
+     WHERE "Shop Now" TAKES THE CUSTOMER (use only ONE of these, or none):
+     category : opens that category, e.g. "Attar"  (must match a category name in products.json)
+     search   : opens search results, e.g. "tasbih"
+     product  : opens one product, e.g. "12"       (the product id from products.json)
+     (none)   : just scrolls to all products
+  ====================================================== */
+  const BANNERS = [
+    {
+      tagline:  "Barakah in every detail",
+      title:    "Quran, Parey, Rehal Box, Seerat & Hadees",
+      subtitle: "Beautiful Islamic books for every home",
+      button:   "Shop Now",
+      image:    "",
+      search:   "quran"
+    },
+    {
+      tagline:  "Sunnah Essentials",
+      title:    "Janimaz, Topi, Tasbih & Miswak",
+      subtitle: "Everyday essentials for every Muslim",
+      button:   "Shop Now",
+      image:    "",
+      category : ""
+    },
+    {
+      tagline:  "Fragrance & Comfort",
+      title:    "Attar, Surma, Dastarkhan, Masjid Carpets & Arabic Stickers",
+      subtitle: "Pure fragrances and home decor",
+      button:   "Shop Now",
+      image:    "",
+      product: "qr-003"
+    }
+  ];
+  const BANNER_INTERVAL_MS = 3000; // change every 5 seconds
 
   /* ---------------- State ---------------- */
   let PRODUCTS = [];
@@ -585,6 +648,172 @@
     renderProducts();
     el.searchInput.focus();
   });
+
+  /* ---------------- ADDED: Banner slider ---------------- */
+  (function initBanners() {
+    const viewport = document.getElementById('bannerViewport');
+    const track = document.getElementById('bannerTrack');
+    const dotsBox = document.getElementById('bannerDots');
+    const prevBtn = document.getElementById('bannerPrev');
+    const nextBtn = document.getElementById('bannerNext');
+    const hero = document.getElementById('heroBanner');
+    const total = BANNERS.length;
+
+    if (!total) { hero.classList.add('hidden'); return; }
+
+    // Build slides
+    track.innerHTML = BANNERS.map((b, i) => {
+      const bg = b.image
+        ? `<img src="${escapeHTML(b.image)}" alt="" draggable="false" ${i === 0 ? '' : 'loading="lazy"'}
+              class="absolute inset-0 w-full h-full object-cover" />
+           <div class="absolute inset-0 bg-gradient-to-t from-emerald-900/85 via-emerald-900/45 to-emerald-900/30"></div>`
+        : `<div class="absolute inset-0 bg-emerald-900"></div>
+           <div class="geo-pattern absolute inset-0 opacity-90"></div>
+           <div class="absolute inset-0 bg-gradient-to-b from-emerald-900/40 via-emerald-900/80 to-emerald-900"></div>`;
+      return `
+        <div class="shrink-0 w-full relative h-[240px] sm:h-[360px] overflow-hidden"
+             role="group" aria-roledescription="slide" aria-label="${i + 1} of ${total}">
+          ${bg}
+          <div class="relative h-full flex flex-col items-center justify-center text-center px-12 sm:px-24">
+            ${b.tagline ? `<p class="text-gold-400 text-[11px] sm:text-sm uppercase tracking-[0.22em] mb-2">${escapeHTML(b.tagline)}</p>` : ''}
+            <h2 class="font-display text-cream text-2xl sm:text-5xl leading-tight max-w-3xl mx-auto">${escapeHTML(b.title || '')}</h2>
+            ${b.subtitle ? `<p class="text-cream/85 text-xs sm:text-base mt-2 sm:mt-3 max-w-xl">${escapeHTML(b.subtitle)}</p>` : ''}
+            <button type="button" data-banner="${i}"
+              class="mt-4 sm:mt-6 rounded-full bg-gold-600 text-emerald-900 font-bold text-sm sm:text-base px-6 py-2.5 hover:bg-gold-400 transition-colors shadow-soft">
+              ${escapeHTML(b.button || 'Shop Now')}
+            </button>
+          </div>
+        </div>`;
+    }).join('');
+
+    // Dots
+    dotsBox.innerHTML = BANNERS.map((_, i) =>
+      `<button type="button" data-dot="${i}" aria-label="Go to banner ${i + 1}" class="banner-dot h-2 rounded-full bg-white/60"></button>`
+    ).join('');
+
+    let index = 0;
+    let timer = null;
+
+    function paintDots() {
+      dotsBox.querySelectorAll('.banner-dot').forEach((d, i) => {
+        d.classList.toggle('w-6', i === index);
+        d.classList.toggle('bg-gold-600', i === index);
+        d.classList.toggle('w-2', i !== index);
+        d.classList.toggle('bg-white/60', i !== index);
+      });
+    }
+    function goTo(i) {
+      index = (i + total) % total;
+      track.style.transform = `translateX(-${index * 100}%)`;
+      paintDots();
+    }
+    function stopAuto() { clearInterval(timer); timer = null; }
+    function startAuto() {
+      stopAuto();
+      if (total > 1) timer = setInterval(() => goTo(index + 1), BANNER_INTERVAL_MS);
+    }
+
+    if (total > 1) {
+      prevBtn.classList.remove('hidden'); prevBtn.classList.add('flex');
+      nextBtn.classList.remove('hidden'); nextBtn.classList.add('flex');
+    } else {
+      dotsBox.classList.add('hidden');
+    }
+
+    prevBtn.addEventListener('click', () => { goTo(index - 1); startAuto(); });
+    nextBtn.addEventListener('click', () => { goTo(index + 1); startAuto(); });
+    dotsBox.addEventListener('click', (e) => {
+      const d = e.target.closest('[data-dot]');
+      if (d) { goTo(Number(d.dataset.dot)); startAuto(); }
+    });
+
+    // Swipe / hold: while a finger (or mouse) is down the slider stays still
+    let dragging = false, startX = 0, startY = 0, dx = 0, moved = false, locked = null;
+
+    viewport.addEventListener('pointerdown', (e) => {
+      if (e.target.closest('#bannerPrev, #bannerNext, [data-dot]')) return;
+      dragging = true; moved = false; locked = null;
+      startX = e.clientX; startY = e.clientY; dx = 0;
+      stopAuto();                       // hold = pause
+    });
+    window.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      if (locked === null && (Math.abs(dx) > 6 || Math.abs(dy) > 6)) {
+        locked = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+      }
+      if (locked !== 'x') return;
+      moved = true;
+      track.classList.add('dragging');
+      viewport.classList.add('dragging');
+      const w = viewport.clientWidth || 1;
+      track.style.transform = `translateX(calc(-${index * 100}% + ${dx}px))`;
+    });
+    function endDrag() {
+      if (!dragging) return;
+      dragging = false;
+      track.classList.remove('dragging');
+      viewport.classList.remove('dragging');
+      const w = viewport.clientWidth || 1;
+      const threshold = Math.min(70, w * 0.15);
+      if (moved && dx <= -threshold) goTo(index + 1);
+      else if (moved && dx >= threshold) goTo(index - 1);
+      else goTo(index);
+      startAuto();                      // release = resume
+    }
+    window.addEventListener('pointerup', endDrag);
+    window.addEventListener('pointercancel', endDrag);
+
+    // Pause on mouse hover (desktop)
+    viewport.addEventListener('mouseenter', stopAuto);
+    viewport.addEventListener('mouseleave', () => { if (!dragging) startAuto(); });
+
+    // Pause when the tab is hidden
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) stopAuto(); else startAuto();
+    });
+
+    // Don't treat a swipe as a button click
+    track.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-banner]');
+      if (!btn) return;
+      if (moved) { moved = false; return; }
+      runBannerAction(BANNERS[Number(btn.dataset.banner)]);
+    }, true);
+
+    goTo(0);
+    startAuto();
+  })();
+
+  // "Shop Now" -> filter products if needed, then scroll to the product grid
+  function runBannerAction(b) {
+    if (!b) return;
+    sharedProductId = null;
+    if (location.search.indexOf('product=') !== -1) history.replaceState(null, '', location.pathname);
+
+    activeCategory = 'All';
+    searchQuery = '';
+    el.searchInput.value = '';
+    el.clearSearch.classList.add('hidden');
+
+    if (b.product) {
+      sharedProductId = String(b.product);
+    } else if (b.category) {
+      activeCategory = b.category;
+    } else if (b.search) {
+      searchQuery = b.search;
+      el.searchInput.value = b.search;
+      el.clearSearch.classList.remove('hidden');
+    }
+
+    if (PRODUCTS.length) { renderCategories(); renderProducts(); }
+
+    const main = document.querySelector('main');
+    const header = document.querySelector('header');
+    const top = main.getBoundingClientRect().top + window.scrollY - (header ? header.offsetHeight : 0) - 8;
+    window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+  }
 
   /* ---------------- Cart logic ---------------- */
   function addToCart(id) {
