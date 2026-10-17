@@ -67,6 +67,17 @@
     '.pm-shake{animation:pmShake .3s ease}';
   document.head.appendChild(style);
 
+  /* ---------------- BUG FIX 1: page zooms in when typing on mobile ----------------
+     Mobile browsers (especially iPhone Safari) zoom the page when a text box with a
+     font smaller than 16px is tapped, and they stay zoomed after the keyboard closes.
+     Making every text box 16px on phones/tablets stops that zoom. */
+  var zoomFix = document.createElement('style');
+  zoomFix.textContent =
+    '@media (max-width:1023px){' +
+      'input,textarea,select{font-size:16px !important}' +
+    '}';
+  document.head.appendChild(zoomFix);
+
   /* ---------------- popup (TASK 1 + size picker) ---------------- */
   var modal = document.createElement('div');
   modal.id = 'productModal';
@@ -428,4 +439,26 @@
     } catch (err) { /* fall through with the original request */ }
     return nativeFetch.call(window, input, init);
   };
+
+  /* ---------------- BUG FIX 2: new category should start from the first product ----------------
+     When a category button is tapped while the page is scrolled far down (near the footer),
+     jump back to the top of the product list so the new category is shown from its start. */
+  function scrollToProductsTop() {
+    var main = document.querySelector('main');
+    var header = document.querySelector('header');
+    if (!main) return;
+    var top = main.getBoundingClientRect().top + window.scrollY - (header ? header.offsetHeight : 0) - 8;
+    if (window.scrollY <= top) return;            // already above the list: leave the page alone
+    var root = document.documentElement;
+    var prev = root.style.scrollBehavior;
+    root.style.scrollBehavior = 'auto';           // jump instantly instead of a long smooth scroll
+    window.scrollTo(0, Math.max(0, top));
+    root.style.scrollBehavior = prev;
+  }
+  // Capture phase: runs before the store re-draws the category buttons.
+  document.addEventListener('click', function (e) {
+    if (e.target.closest && e.target.closest('#categoryRow .cat-pill')) {
+      setTimeout(scrollToProductsTop, 0);         // wait until the new products are drawn
+    }
+  }, true);
 })();

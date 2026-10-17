@@ -1,0 +1,36 @@
+[
+    {"id": "qr-001","name": "The Holy Quran (Urdu In Roman Script)",
+    "price": 549,
+    "category": "Quran",
+    "description": "The Holy Quran with an Urdu translation in Roman script, an easy way to read and understand the Quran if you're comfortable with English letters.",
+    "image": "quran/quran-roman-script-modern.webp"
+  },
+
+  {"id": "qr-002","name": "Quran Majeed ( No . 126) (15 LINES) (Maplitho)",
+    "price": 399,
+    "category": "Quran",
+    "description": "Quran Majeed (No. 126) in 15-line format on smooth Maplitho paper. Clear print and easy to read, ideal for daily recitation",
+    "image": "quran/quran-126-modern.webp"
+  },
+
+  {
+  "id": "tshirt-001",
+  "name": "Islamic T-Shirt",
+  "category": "Clothing",
+  "price": 399,
+  "image": "images/tshirt.webp",
+  "description": "Cotton t-shirt",
+  "sizes": ["S", "M", "L", "XL"],
+  "images": ["quran/quran-126-modern.webp", "images/blueCrystalTasbhe.png","quran/quran-roman-script-modern.webp"]
+
+},
+{
+  "id": "attar-001",
+  "name": "Rose Attar",
+  "category": "Clothing",
+   "price": 399,
+  "image": "images/attar-front.webp",
+  "images": ["quran/quran-126-modern.webp", "images/blueCrystalTasbhe.png","quran/quran-roman-script-modern.webp"]
+  
+}
+]

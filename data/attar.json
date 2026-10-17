@@ -1,0 +1,13 @@
+[
+      {
+  "id": "arrar-001",
+  "name": "Islamic T-Shirt",
+  "category": "attar",
+  "price": 399,
+  "image": "images/tshirt.webp",
+  "description": "Cotton t-shirt",
+  "sizes": ["S", "M", "L", "XL"],
+  "images": ["quran/quran-126-modern.webp", "images/blueCrystalTasbhe.png","quran/quran-roman-script-modern.webp"]
+
+}
+]

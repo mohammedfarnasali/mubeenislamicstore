@@ -1,178 +1,68 @@
 [
-  {"id": "qr-001","name": "The Holy Quran (Urdu In Roman Script)",
+  {
+    "id": "arrar-001",
+    "name": "Islamic T-Shirt",
+    "category": "attar",
+    "price": 399,
+    "image": "images/tshirt.webp",
+    "description": "Cotton t-shirt",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "images": [
+      "quran/quran-126-modern.webp",
+      "images/blueCrystalTasbhe.png",
+      "quran/quran-roman-script-modern.webp"
+    ]
+  },
+  {
+    "id": "qr-001",
+    "name": "The Holy Quran (Urdu In Roman Script)",
     "price": 549,
     "category": "Quran",
     "description": "The Holy Quran with an Urdu translation in Roman script, an easy way to read and understand the Quran if you're comfortable with English letters.",
     "image": "quran/quran-roman-script-modern.webp"
   },
-
-  {"id": "qr-002","name": "Quran Majeed ( No . 126) (15 LINES) (Maplitho)",
-    "price": 399,
-    "category": "Quran",
-    "description": "Quran Majeed (No. 126) in 15-line format on smooth Maplitho paper. Clear print and easy to read, ideal for daily recitation",
-    "image": "quran/quran-126-modern.webp"
-  },
-
   {
-  "id": "tshirt-001",
-  "name": "Islamic T-Shirt",
-  "category": "Clothing",
-  "price": 399,
-  "image": "images/tshirt.webp",
-  "description": "Cotton t-shirt",
-  "sizes": ["S", "M", "L", "XL"],
-  "images": ["quran/quran-126-modern.webp", "images/blueCrystalTasbhe.png","quran/quran-roman-script-modern.webp"]
-
-},
-{
-  "id": "attar-001",
-  "name": "Rose Attar",
-  "image": "images/attar-front.webp",
-  "images": ["quran/quran-126-modern.webp", "images/blueCrystalTasbhe.png","quran/quran-roman-script-modern.webp"]
-  
-},
-  {"id": "qr-003",
+    "id": "qr-002",
     "name": "Quran Majeed ( No . 126) (15 LINES) (Maplitho)",
     "price": 399,
     "category": "Quran",
     "description": "Quran Majeed (No. 126) in 15-line format on smooth Maplitho paper. Clear print and easy to read, ideal for daily recitation",
     "image": "quran/quran-126-modern.webp"
   },
-    {"id": "qr-004",
-    "name": "Quran Majeed ( No . 126) (15 LINES) (Maplitho)",
-    "price": 399,
-    "category": "Quran",
-    "description": "Quran Majeed (No. 126) in 15-line format on smooth Maplitho paper. Clear print and easy to read, ideal for daily recitation",
-    "image": "quran/quran-126-modern.webp"
-  },
-    {"id": "qr-005",
-    "name": "Quran Majeed ( No . 126) (15 LINES) (Maplitho)",
-    "price": 399,
-    "category": "Quran",
-    "description": "Quran Majeed (No. 126) in 15-line format on smooth Maplitho paper. Clear print and easy to read, ideal for daily recitation",
-    "image": "quran/quran-126-modern.webp"
-  },
-  {"id": "qr-006",
-    "name": "Quran Majeed ( No . 126) (15 LINES) (Maplitho)",
-    "price": 399,
-    "category": "Quran",
-    "description": "Quran Majeed (No. 126) in 15-line format on smooth Maplitho paper. Clear print and easy to read, ideal for daily recitation",
-    "image": "quran/quran-126-modern.webp"
-  },
-  {"id": "qr-007",
-    "name": "Quran Majeed ( No . 126) (15 LINES) (Maplitho)",
-    "price": 399,
-    "category": "Quran",
-    "description": "Quran Majeed (No. 126) in 15-line format on smooth Maplitho paper. Clear print and easy to read, ideal for daily recitation",
-    "image": "quran/quran-126-modern.webp"
-  },
-  {"id": "qr-008",
-    "name": "Quran Majeed ( No . 126) (15 LINES) (Maplitho)",
-    "price": 399,
-    "category": "Quran",
-    "description": "Quran Majeed (No. 126) in 15-line format on smooth Maplitho paper. Clear print and easy to read, ideal for daily recitation",
-    "image": "quran/quran-126-modern.webp"
-  },
-  {"id": "qr-009",
-    "name": "Quran Majeed ( No . 126) (15 LINES) (Maplitho)",
-    "price": 399,
-    "category": "Quran",
-    "description": "Quran Majeed (No. 126) in 15-line format on smooth Maplitho paper. Clear print and easy to read, ideal for daily recitation",
-    "image": "quran/quran-126-modern.webp"
-  },
-  {"id": "qr-010",
-    "name": "Quran Majeed ( No . 126) (15 LINES) (Maplitho)",
-    "price": 399,
-    "category": "Quran",
-    "description": "Quran Majeed (No. 126) in 15-line format on smooth Maplitho paper. Clear print and easy to read, ideal for daily recitation",
-    "image": "quran/quran-126-modern.webp"
-  },
-  {"id": "qr-011",
-    "name": "Quran Majeed ( No . 126) (15 LINES) (Maplitho)",
-    "price": 399,
-    "category": "Quran",
-    "description": "Quran Majeed (No. 126) in 15-line format on smooth Maplitho paper. Clear print and easy to read, ideal for daily recitation",
-    "image": "quran/quran-126-modern.webp"
-  },
- 
- 
   {
-    "id": "jn-001",
-    "name": "Turkish Velvet Janamaz – Emerald Green",
-    "price": 1299,
-    "category": "Janamaz",
-    "description": "Plush, cushioned velvet prayer mat woven with a traditional mihrab (arch) motif. Non-slip backing and generous padding for comfortable daily salah.",
-    "image": "images/masnoon-duaen-modern.png"
+    "id": "tshirt-001",
+    "name": "Islamic T-Shirt",
+    "category": "Clothing",
+    "price": 399,
+    "image": "images/tshirt.webp",
+    "description": "Cotton t-shirt",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "images": [
+      "quran/quran-126-modern.webp",
+      "images/blueCrystalTasbhe.png",
+      "quran/quran-roman-script-modern.webp"
+    ]
   },
-
-
-
   {
-    "id": "ts-001",
-    "name": "99-Bead Blue Crystal Tasbih",
-    "price": 99,
-    "category": "Tasbih",
-    "description": "=====",
-    "image": "images/blueCrystalTasbhe.png"
-  },
-
-
-  {
-    "id": "L&MA-001",
-    "name":"Strawberry-8ML",
-    "price": 99,
-    "category": "Legacy & Modern Attars",
-    "description":"Long-lasting alcohol-free perfume oil. Convenient roll-on, rich floral & spicy concentrated natural attar.",
-    "image": "images/strawberryPerfumeBig.png"
-  }, 
-
-
-  {
-    "id": "F&FA-001",
-    "name":"Strawberry-8ML",
-    "price": 99,
-    "category": "Fruity & Floral Attars",
-    "description":"Long-lasting alcohol-free perfume oil. Convenient roll-on, rich floral & spicy concentrated natural attar.",
-    "image": "images/strawberryPerfumeBig.png"
-  }, 
-  {
-    "id": "F&FA-002",
-    "name":"DEEDS(Dove)-8ML",
-    "price": 99,
-    "category": "Fruity & Floral Attars",
-    "description":"Long-lasting alcohol-free perfume oil. Convenient roll-on, rich floral & spicy concentrated natural attar.",
-    "image": "images/deedsPerfumeBig.png"
-  },
-
-
-
-
-
-
-  {
-    "id": "mis-001",
-    "name":"Vacuum –Packed Natural Miswak",
-    "price": 29,
-    "category": "Miswak",
-    "description": "Freshly cut, vacuum-sealed Miswak. 100% natural twig that brightens teeth, strengthens gums and revives Sunnah.",
-    "image": "images/vaccumed miswak.jpg"
-  },
-
-  {
-    "id": "mis-002",
-    "name":"Zaitoon –Natural Miswak",
-    "price": 49,
-    "category": "Miswak",
-    "description": "Traditional Olive wood Miswak. Naturally cleans teeth, strengthens gums, and promotes daily Sunnah oral hygiene.",
-    "image": "images/zaitoon miswak.jpg"
-  },
-
-  {
-    "id": "mis-003",
-    "name":"Natural Loose Miswak",
-    "price": 18,
-    "category": "Miswak",
-    "description": "Natural loose Miswak twig. Traditional chemical-free toothbrush that brightens teeth, strengthens gums & Sunnah.",
-    "image": "images/loose miswak.jpg"
+    "id": "attar-001",
+    "name": "Rose Attar",
+    "category": "Clothing",
+    "price": 399,
+    "image": "images/attar-front.webp",
+    "images": [
+      "quran/quran-126-modern.webp",
+      "images/blueCrystalTasbhe.png",
+      "quran/quran-roman-script-modern.webp"
+    ]
   }
 ]
