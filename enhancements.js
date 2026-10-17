@@ -79,7 +79,17 @@
       '<button type="button" id="pmClose" aria-label="Close" class="absolute top-3 right-3 z-10 grid place-items-center w-9 h-9 rounded-full bg-white/90 text-emerald-900 shadow-card hover:bg-white">' +
         '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>' +
       '</button>' +
-      '<div class="aspect-square bg-sand overflow-hidden rounded-t-2xl"><img id="pmImg" alt="" class="w-full h-full object-cover" /></div>' +
+      '<div id="pmGallery" class="relative aspect-square bg-sand overflow-hidden rounded-t-2xl" style="touch-action:pan-y">' +
+        '<img id="pmImg" alt="" draggable="false" class="w-full h-full object-cover" />' +
+        '<button type="button" id="pmPrev" aria-label="Previous photo" class="hidden absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/85 text-emerald-900 shadow-card items-center justify-center">' +
+          '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>' +
+        '</button>' +
+        '<button type="button" id="pmNext" aria-label="Next photo" class="hidden absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/85 text-emerald-900 shadow-card items-center justify-center">' +
+          '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>' +
+        '</button>' +
+        '<span id="pmCount" class="hidden absolute bottom-2 right-3 text-[11px] font-semibold bg-ink/60 text-cream rounded-full px-2 py-0.5"></span>' +
+      '</div>' +
+      '<div id="pmThumbs" class="hidden gap-2 px-5 pt-3 overflow-x-auto no-scrollbar"></div>' +
       '<div class="p-5">' +
         '<span id="pmCat" class="text-[11px] uppercase tracking-wide text-gold-700 font-semibold"></span>' +
         '<h3 id="pmName" class="font-display text-2xl text-emerald-900 leading-snug mt-1"></h3>' +
@@ -98,6 +108,11 @@
 
   var pm = {
     img: modal.querySelector('#pmImg'),
+    gallery: modal.querySelector('#pmGallery'),
+    prev: modal.querySelector('#pmPrev'),
+    next: modal.querySelector('#pmNext'),
+    count: modal.querySelector('#pmCount'),
+    thumbs: modal.querySelector('#pmThumbs'),
     cat: modal.querySelector('#pmCat'),
     name: modal.querySelector('#pmName'),
     price: modal.querySelector('#pmPrice'),
@@ -111,6 +126,55 @@
     card: modal.querySelector('#pmCard')
   };
   var current = null; // { p, size }
+  var photos = [], photoIdx = 0;
+
+  /* Photos: the product's "image" first, then any extra photos listed in "images" */
+  function photoList(p) {
+    var list = [];
+    if (p.image) list.push(p.image);
+    if (Array.isArray(p.images)) {
+      p.images.forEach(function (u) { if (u && list.indexOf(u) === -1) list.push(u); });
+    }
+    return list;
+  }
+  function showPhoto(i) {
+    if (!photos.length) { pm.img.removeAttribute('src'); return; }
+    photoIdx = (i + photos.length) % photos.length;
+    pm.img.src = photos[photoIdx];
+    pm.count.textContent = (photoIdx + 1) + ' / ' + photos.length;
+    var t = pm.thumbs.children;
+    for (var k = 0; k < t.length; k++) {
+      t[k].className = 'shrink-0 w-14 h-14 rounded-lg overflow-hidden border-2 ' +
+        (k === photoIdx ? 'border-emerald-900' : 'border-sand');
+    }
+  }
+  function setupPhotos(p) {
+    photos = photoList(p);
+    pm.img.alt = p.name || '';
+    var multi = photos.length > 1;
+    pm.thumbs.innerHTML = '';
+    if (multi) {
+      photos.forEach(function (u, k) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.setAttribute('aria-label', 'Photo ' + (k + 1));
+        var im = document.createElement('img');
+        im.src = u; im.alt = '';
+        im.className = 'w-full h-full object-cover';
+        b.appendChild(im);
+        b.addEventListener('click', function () { showPhoto(k); });
+        pm.thumbs.appendChild(b);
+      });
+    }
+    pm.thumbs.classList.toggle('hidden', !multi);
+    pm.thumbs.classList.toggle('flex', multi);
+    pm.prev.classList.toggle('hidden', !multi);
+    pm.prev.classList.toggle('flex', multi);
+    pm.next.classList.toggle('hidden', !multi);
+    pm.next.classList.toggle('flex', multi);
+    pm.count.classList.toggle('hidden', !multi);
+    showPhoto(0);
+  }
 
   function paintChips() {
     var chips = pm.sizes.children;
@@ -130,8 +194,7 @@
     var saved = getSizes()[p.id];
     current = { p: p, size: (cart[p.id] && saved && list.indexOf(saved) > -1) ? saved : '' };
 
-    pm.img.src = p.image || '';
-    pm.img.alt = p.name || '';
+    setupPhotos(p);
     pm.cat.textContent = p.category || '';
     pm.name.textContent = p.name || '';
     pm.price.textContent = fmt(p.price);
@@ -204,6 +267,25 @@
 
   pm.add.addEventListener('click', addFromModal);
   pm.close.addEventListener('click', closeModal);
+  pm.prev.addEventListener('click', function () { showPhoto(photoIdx - 1); });
+  pm.next.addEventListener('click', function () { showPhoto(photoIdx + 1); });
+  document.addEventListener('keydown', function (e) {
+    if (!current || photos.length < 2) return;
+    if (e.key === 'ArrowLeft') showPhoto(photoIdx - 1);
+    if (e.key === 'ArrowRight') showPhoto(photoIdx + 1);
+  });
+  // swipe left / right on the photo
+  var touchX = null;
+  pm.gallery.addEventListener('touchstart', function (e) {
+    touchX = e.touches.length === 1 ? e.touches[0].clientX : null;
+  }, { passive: true });
+  pm.gallery.addEventListener('touchend', function (e) {
+    if (touchX === null || photos.length < 2) return;
+    var dx = e.changedTouches[0].clientX - touchX;
+    touchX = null;
+    if (dx <= -40) showPhoto(photoIdx + 1);
+    else if (dx >= 40) showPhoto(photoIdx - 1);
+  }, { passive: true });
   modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && current) closeModal();
