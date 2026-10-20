@@ -1,0 +1,28 @@
+ [
+ {
+    "id": "mis-001",
+    "name":"Vacuum –Packed Natural Miswak",
+    "price": 29,
+    "category": "Miswak",
+    "description": "Freshly cut, vacuum-sealed Miswak. 100% natural twig that brightens teeth, strengthens gums and revives Sunnah.",
+    "image": "images/vaccumed miswak.jpg"
+  },
+
+  {
+    "id": "mis-002",
+    "name":"Zaitoon –Natural Miswak",
+    "price": 49,
+    "category": "Miswak",
+    "description": "Traditional Olive wood Miswak. Naturally cleans teeth, strengthens gums, and promotes daily Sunnah oral hygiene.",
+    "image": "images/zaitoon miswak.jpg"
+  },
+
+  {
+    "id": "mis-003",
+    "name":"Natural Loose Miswak",
+    "price": 18,
+    "category": "Miswak",
+    "description": "Natural loose Miswak twig. Traditional chemical-free toothbrush that brightens teeth, strengthens gums & Sunnah.",
+    "image": "images/loose miswak.jpg"
+  }
+] 
