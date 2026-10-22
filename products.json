@@ -1,27 +1,59 @@
 [
   {
-    "id": "qr-001",
-    "name": "The Holy Quran (Urdu In Roman Script)",
-    "price": 549,
-    "category": "Quran",
-    "description": "The Holy Quran with an Urdu translation in Roman script, an easy way to read and understand the Quran if you're comfortable with English letters.",
-    "image": "quran/quran-roman-script-modern.webp"
+    "id": "attar-001",
+    "name": "Kashish Attar 3ml",
+    "category": "Attar",
+    "price": 69,
+    "image": "images/attars/kashish-attar-.webp",
+    "description": "Kashish is a luxury, musk-infused eau de parfum crafted for modern, successful men. Designed by master perfumers using premium ingredients, it offers an alluring, long-lasting scent that blends sophistication with charisma. Versatile enough for both formal wear and casual outings, this iconic fragrance delivers an unforgettable olfactory experience and leaves a lasting impression of exclusivity and success."
   },
   {
-    "id": "qr-002",
-    "name": "Quran Majeed ( No . 126) (15 LINES) (Maplitho)",
-    "price": 399,
-    "category": "Quran",
-    "description": "Quran Majeed (No. 126) in 15-line format on smooth Maplitho paper. Clear print and easy to read, ideal for daily recitation",
-    "image": "quran/quran-126-modern.webp"
+    "id": "attar-002",
+    "name": "Chocolate Attar 3ml",
+    "category": "Attar",
+    "price": 60,
+    "image": "images/attars/Mubeen_Attar_Chocolate.webp",
+    "description": "Indulge in the decadent blend of white musk, rich cocoa, and sweet vanilla. Chocolate Musk Attar offers a warm, captivating, and long-lasting unisex fragrance that elevates your presence with effortless elegance and charm."
+  },
+  {
+    "id": "attar-003",
+    "name": "Aseel Attar 3ml",
+    "category": "Attar",
+    "price": 60,
+    "image": "images/attars/Mubeen_Attar_Aseel.webp",
+    "description": "Experience timeless luxury with Aseel Attar. A refined, woody blend combining delicate florals like rose and jasmine with warm spices and deep musky notes, crafted for men and women who appreciate sophisticated elegance."
+  },
+  {
+    "id": "attar-004",
+    "name": "Anam Attar 3ml",
+    "category": "Attar",
+    "price": 60,
+    "image": "images/attars/Mubeen_Attar_Anam.webp",
+    "description": "Unveil pure grace with Anam Attar. Featuring a beautiful harmony of soft rose, jasmine, and rich sandalwood, this alcohol-free, long-lasting floral fragrance is designed for confident women who embody natural beauty and sophistication."
+  },
+  {
+    "id": "attar-005",
+    "name": "Baqoor Attar 3ml",
+    "category": "Attar",
+    "price": 69,
+    "image": "images/attars/Mubeen_Attar_Baqoor.webp",
+    "description": "Step into pure opulence with Baqoor Attar. A rich Middle Eastern blend featuring pure oud wood, warm ambergris, sandalwood, and exotic hints of saffron and cinnamon. Intense, long-lasting, and deeply aromatic, it’s an unforgettable scent for lovers of luxury."
+  },
+  {
+    "id": "attar-006",
+    "name": "Faraaz Attar 3ml",
+    "category": "Attar",
+    "price": 60,
+    "image": "images/attars/Mubeen_Attar_Faraaz.webp",
+    "description": "Crafted for the modern man who values tradition and prestige, Faraaz is an intense, long-lasting Arabian attar oil. It opens with an invigorating burst of citrus and floral jasmine before evolving into a rich, masculine base of patchouli, cedarwood, and deep oud accents. Free from fast-evaporating alcohol, this scent develops beautifully on the skin over time, leaving a lasting impression wherever you go."
   },
   {
     "id": "arrar-001",
-    "name": "Islamic T-Shirt",
-    "category": "attar",
-    "price": 399,
+    "name": "Test",
+    "category": "Attar",
+    "price": 0,
     "image": "images/tshirt.webp",
-    "description": "Cotton t-shirt",
+    "description": "Test",
     "sizes": [
       "S",
       "M",
@@ -40,7 +72,7 @@
     "price": 29,
     "category": "Miswak",
     "description": "Freshly cut, vacuum-sealed Miswak. 100% natural twig that brightens teeth, strengthens gums and revives Sunnah.",
-    "image": "images/vaccumed miswak.jpg"
+    "image": "images/miswaq/vaccumed miswak.jpg"
   },
   {
     "id": "mis-002",
@@ -48,7 +80,7 @@
     "price": 49,
     "category": "Miswak",
     "description": "Traditional Olive wood Miswak. Naturally cleans teeth, strengthens gums, and promotes daily Sunnah oral hygiene.",
-    "image": "images/zaitoon miswak.jpg"
+    "image": "images/miswaq/zaitoon miswak.jpg"
   },
   {
     "id": "mis-003",
@@ -56,7 +88,23 @@
     "price": 18,
     "category": "Miswak",
     "description": "Natural loose Miswak twig. Traditional chemical-free toothbrush that brightens teeth, strengthens gums & Sunnah.",
-    "image": "images/loose miswak.jpg"
+    "image": "images/miswaq/loose miswak.jpg"
+  },
+  {
+    "id": "qr-001",
+    "name": "The Holy Quran (Urdu In Roman Script)",
+    "price": 549,
+    "category": "Quran",
+    "description": "The Holy Quran with an Urdu translation in Roman script, an easy way to read and understand the Quran if you're comfortable with English letters.",
+    "image": "quran/quran-roman-script-modern.webp"
+  },
+  {
+    "id": "qr-002",
+    "name": "Quran Majeed ( No . 126) (15 LINES) (Maplitho)",
+    "price": 399,
+    "category": "Quran",
+    "description": "Quran Majeed (No. 126) in 15-line format on smooth Maplitho paper. Clear print and easy to read, ideal for daily recitation",
+    "image": "quran/quran-126-modern.webp"
   },
   {
     "id": "tshirt-001",
@@ -78,7 +126,7 @@
     ]
   },
   {
-    "id": "attar-001",
+    "id": "attar-",
     "name": "Rose Attar",
     "category": "Clothing",
     "price": 399,
