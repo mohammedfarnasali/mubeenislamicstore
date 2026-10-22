@@ -25,7 +25,7 @@ const REQUIRED = ['id', 'name', 'category', 'price', 'image'];
    Categories not in this list go to the end.
    --------------------------------------------------------------------- */
 const CATEGORY_ORDER = [
-  'Attar',
+  'Legacy Attars',
   'Miswak'
 ];
 

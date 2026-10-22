@@ -1,68 +1,176 @@
 [
-
-{
-  "id": "attar-001",
-  "name": "Kashish Attar 3ml",
-  "category": "Attar",
-  "price": 69,
-  "image": "images/attars/kashish-attar-.webp",
-  "description": "Kashish is a luxury, musk-infused eau de parfum crafted for modern, successful men. Designed by master perfumers using premium ingredients, it offers an alluring, long-lasting scent that blends sophistication with charisma. Versatile enough for both formal wear and casual outings, this iconic fragrance delivers an unforgettable olfactory experience and leaves a lasting impression of exclusivity and success."
-
-},
-{
-  "id": "attar-002",
-  "name": "Chocolate Attar 3ml",
-  "category": "Attar",
-  "price": 60,
-  "image": "images/attars/Mubeen_Attar_Chocolate.webp",
-  "description": "Indulge in the decadent blend of white musk, rich cocoa, and sweet vanilla. Chocolate Musk Attar offers a warm, captivating, and long-lasting unisex fragrance that elevates your presence with effortless elegance and charm."
-
-},
-{
-  "id": "attar-003",
-  "name": "Aseel Attar 3ml",
-  "category": "Attar",
-  "price": 60,
-  "image": "images/attars/Mubeen_Attar_Aseel.webp",
-  "description": "Experience timeless luxury with Aseel Attar. A refined, woody blend combining delicate florals like rose and jasmine with warm spices and deep musky notes, crafted for men and women who appreciate sophisticated elegance."
-
-},
-{
-  "id": "attar-004",
-  "name": "Anam Attar 3ml",
-  "category": "Attar",
-  "price": 60,
-  "image": "images/attars/Mubeen_Attar_Anam.webp",
-  "description": "Unveil pure grace with Anam Attar. Featuring a beautiful harmony of soft rose, jasmine, and rich sandalwood, this alcohol-free, long-lasting floral fragrance is designed for confident women who embody natural beauty and sophistication."
-
-},
-{
-  "id": "attar-005",
-  "name": "Baqoor Attar 3ml",
-  "category": "Attar",
-  "price": 69,
-  "image": "images/attars/Mubeen_Attar_Baqoor.webp",
-  "description": "Step into pure opulence with Baqoor Attar. A rich Middle Eastern blend featuring pure oud wood, warm ambergris, sandalwood, and exotic hints of saffron and cinnamon. Intense, long-lasting, and deeply aromatic, it’s an unforgettable scent for lovers of luxury."
-
-},
-{
-  "id": "attar-006",
-  "name": "Faraaz Attar 3ml",
-  "category": "Attar",
-  "price": 60,
-  "image": "images/attars/Mubeen_Attar_Faraaz.webp",
-  "description": "Crafted for the modern man who values tradition and prestige, Faraaz is an intense, long-lasting Arabian attar oil. It opens with an invigorating burst of citrus and floral jasmine before evolving into a rich, masculine base of patchouli, cedarwood, and deep oud accents. Free from fast-evaporating alcohol, this scent develops beautifully on the skin over time, leaving a lasting impression wherever you go."
-},
-{
-  "id": "arrar-001",
-  "name": "Test",
-  "category": "Attar",
-  "price": 0,
-  "image": "images/tshirt.webp",
-  "description": "Test",
-  "sizes": ["S", "M", "L", "XL"],
-  "images": ["quran/quran-126-modern.webp", "images/blueCrystalTasbhe.png","quran/quran-roman-script-modern.webp"]
-
-}
-
+  {
+    "id": "attar-001",
+    "name": "Kashish Attar 3ml",
+    "category": "Legacy Attars",
+    "price": 60,
+    "image": "images/attars/kashish-attar-.webp",
+    "description": "Kashish is a luxury, musk-infused eau de parfum crafted for modern, successful men. Designed by master perfumers using premium ingredients, it offers an alluring, long-lasting scent that blends sophistication with charisma. Versatile enough for both formal wear and casual outings, this iconic fragrance delivers an unforgettable olfactory experience and leaves a lasting impression of exclusivity and success."
+  },
+  {
+    "id": "attar-002",
+    "name": "Chocolate Attar 3ml",
+    "category": "Legacy Attars",
+    "price": 60,
+    "image": "images/attars/Mubeen_Attar_Chocolate.webp",
+    "description": "Indulge in the decadent blend of white musk, rich cocoa, and sweet vanilla. Chocolate Musk Attar offers a warm, captivating, and long-lasting unisex fragrance that elevates your presence with effortless elegance and charm."
+  },
+  {
+    "id": "attar-003",
+    "name": "Aseel Attar 3ml",
+    "category": "Legacy Attars",
+    "price": 60,
+    "image": "images/attars/Mubeen_Attar_Aseel.webp",
+    "description": "Experience timeless luxury with Aseel Attar. A refined, woody blend combining delicate florals like rose and jasmine with warm spices and deep musky notes, crafted for men and women who appreciate sophisticated elegance."
+  },
+  {
+    "id": "attar-004",
+    "name": "Anam Attar 3ml",
+    "category": "Legacy Attars",
+    "price": 60,
+    "image": "images/attars/Mubeen_Attar_Anam.webp",
+    "description": "Unveil pure grace with Anam Attar. Featuring a beautiful harmony of soft rose, jasmine, and rich sandalwood, this alcohol-free, long-lasting floral fragrance is designed for confident women who embody natural beauty and sophistication."
+  },
+  {
+    "id": "attar-005",
+    "name": "Baqoor Attar 3ml",
+    "category": "Legacy Attars",
+    "price": 60,
+    "image": "images/attars/Mubeen_Attar_Baqoor.webp",
+    "description": "Step into pure opulence with Baqoor Attar. A rich Middle Eastern blend featuring pure oud wood, warm ambergris, sandalwood, and exotic hints of saffron and cinnamon. Intense, long-lasting, and deeply aromatic, it’s an unforgettable scent for lovers of luxury."
+  },
+  {
+    "id": "attar-006",
+    "name": "Faraaz Attar 3ml",
+    "category": "Legacy Attars",
+    "price": 60,
+    "image": "images/attars/Mubeen_Attar_Faraaz.webp",
+    "description": "Crafted for the modern man who values tradition and prestige, Faraaz is an intense, long-lasting Arabian attar oil. It opens with an invigorating burst of citrus and floral jasmine before evolving into a rich, masculine base of patchouli, cedarwood, and deep oud accents. Free from fast-evaporating alcohol, this scent develops beautifully on the skin over time, leaving a lasting impression wherever you go."
+  },
+  {
+    "id": "attar-007",
+    "name": "Jannat Ul Firdaus Attar 3ml",
+    "category": "Legacy Attars",
+    "price": 60,
+    "image": "images/attars/Mubeen_Attar_Jannet_ul_Firdaus.webp",
+    "description": "Transport yourself to paradise with Jannat-ul Firdaus. Crafted for the modern man, this wild, long-lasting attar blends rich oud and sensual musk to create an intoxicating, unforgettable aroma. Perfect for making a bold statement anywhere you go."
+  },
+  {
+    "id": "attar-008",
+    "name": "Kala Gulab Attar 3ml",
+    "category": "Legacy Attars",
+    "price": 60,
+    "image": "images/attars/Mubeen_Attar_Kala_Gulab.webp",
+    "description": "Elevate your daily routine with Kala Gulab. A harmonious blend of delicate rose petals and subtle undertones, this natural, long-lasting attar inspires optimism and effortless sophistication for both men and women."
+  },
+  {
+    "id": "attar-009",
+    "name": "Lexus Attar 3ml",
+    "category": "Legacy Attars",
+    "price": 60,
+    "image": "images/attars/Mubeen_Attar_Lexus.webp",
+    "description": "Experience serious luxury with Lexus Attar. A masterful blend of deep oud arabia, warm spices, gentle florals, and a rich touch of amber and musk. Non-alcoholic and long-lasting, it exudes an expensive, graceful aura for any special occasion."
+  },
+  {
+    "id": "attar-010",
+    "name": "Motia Attar 3ml",
+    "category": "Legacy Attars",
+    "price": 60,
+    "image": "images/attars/Mubeen_Attar_Motia.webp",
+    "description": "Unwind with the pure, calming essence of Motia Attar. Capturing the authentic, clean aroma of natural jasmine, this soothing attar adds a touch of timeless luxury and serenity to your daily personal routine or living space."
+  },
+  {
+    "id": "attar-0011",
+    "name": "Danish Attar 3ml",
+    "category": "Legacy Attars",
+    "price": 60,
+    "image": "images/attars/Mubeen_Attar_Danish.webp",
+    "description": "Immerse yourself in Arabian opulence with Danish. A sophisticated men's attar featuring rich oud arabia, refined musk, and smooth sandalwood. Long-lasting and mysterious, it is the ultimate signature scent for the discerning gentleman."
+  },
+  {
+    "id": "attar-012",
+    "name": "Hina Attar 3ml",
+    "category": "Legacy Attars",
+    "price": 60,
+    "image": "images/attars/Mubeen_Attar_Hina.webp",
+    "description": "Discover power and poise with Hina Attar. A mesmerizing blend of earthy hina, deep musk, warm amber, and sandalwood. This bold, non-alcoholic oriental fragrance brings a touch of mysterious strength to the modern woman."
+  },
+  {
+    "id": "attar-013",
+    "name": "Arsh Attar 3ml",
+    "category": "Legacy Attars",
+    "price": 60,
+    "image": "images/attars/Mubeen_Attar_Arsh.webp",
+    "description": "Embody royal elegance with Arsh Attar. A refreshing burst of citrus and lemon transitions into a warm heart of rose and spice, grounded by sensual amber and musk. Alcohol-free, long-lasting, and conveniently packaged in a roll-on bottle for on-the-go luxury."
+  },
+  {
+    "id": "attar-0014",
+    "name": "Gulab Attar 3ml",
+    "category": "Legacy Attars",
+    "price": 60,
+    "image": "images/attars/Mubeen_Attar_Gulab.webp",
+    "description": "Experience timeless floral luxury with Gulab Attar. A seamless fusion of French elegance and Arabian warmth, this non-alcoholic rose attar features a rich base of sandalwood, oud, and amber. Pure, long-lasting, and designed for men and women of sophistication."
+  },
+  {
+    "id": "attar-0015",
+    "name": "Mushk Attar 3ml",
+    "category": "Legacy Attars",
+    "price": 60,
+    "image": "images/attars/Mubeen_Attar_Mushk.webp",
+    "description": "Experience the raw, powerful allure of Mushk Attar. Featuring a bold, traditional, and long-lasting musk profile, this intense fragrance delivers an unforgettable olfactory journey for men and women who love authentic, standout scents."
+  },
+  {
+    "id": "attar-0016",
+    "name": "Poison Attar 3ml",
+    "category": "Legacy Attars",
+    "price": 60,
+    "image": "images/attars/Mubeen_Attar_Poison.webp",
+    "description": "Embody pure opulence with Poison Attar. A magnificent blend of old-world charm and contemporary style, this luxurious scent fuses rich oud attar notes with deep eau de parfum elegance for a truly unforgettable aromatic experience."
+  },
+  {
+    "id": "attar-0017",
+    "name": "Shadow Attar 3ml",
+    "category": "Legacy Attars",
+    "price": 60,
+    "image": "images/attars/Mubeen_Attar_Shadow.webp",
+    "description": "Make a statement with Shadow Attar. Combining traditional attar craftsmanship with modern style, this rich blend of oud and eau de parfum delivers a long-lasting, sophisticated scent that exudes class and uniqueness."
+  },
+  {
+    "id": "attar-0018",
+    "name": "Peace Attar 3ml",
+    "category": "Legacy Attars",
+    "price": 60,
+    "image": "images/attars/Mubeen_Attar_Peace.webp",
+    "description": "Inspire tranquility and serenity with Peace Attar. A soothing, long-lasting daily fragrance featuring delicate floral notes with a persistent, timeless appeal. Perfect for both men and women seeking a calming touch of elegance."
+  },
+  {
+    "id": "attar-0019",
+    "name": "Shah Jahan Attar 3ml",
+    "category": "Legacy Attars",
+    "price": 60,
+    "image": "images/attars/Mubeen_Attar_Shah_Jahan.webp",
+    "description": "Step into royal heritage with Shah Jahan Attar. Crafted for the modern man, this classic arabic scent fuses the fullness of oud arabia with rich eau de parfum depth, creating a timeless, seductive, and long-lasting signature fragrance."
+  },
+  {
+    "id": "attar-0020",
+    "name": "Zeba Attar 3ml",
+    "category": "Legacy Attars",
+    "price": 60,
+    "image": "images/attars/Mubeen_Attar_Zeba.webp",
+    "description": "Capture the calm and cozy essence of breezy evenings with Zeba Attar. Combining fresh, gentle, and soothing notes, this natural fragrance adds a touch of tranquil elegance and warmth to your daily routine."
+  },
+  {
+    "id": "arrar-001",
+    "name": "Test",
+    "category": "Legacy Attars",
+    "price": 0,
+    "image": "images/tshirt.webp",
+    "description": "Test",
+    "sizes": ["S", "M", "L", "XL"],
+    "images": [
+      "quran/quran-126-modern.webp",
+      "images/blueCrystalTasbhe.png",
+      "quran/quran-roman-script-modern.webp"
+    ]
+  }
 ]
