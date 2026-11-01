@@ -163,14 +163,17 @@
     "id": "arrar-001",
     "name": "Test",
     "category": "Legacy Attars",
-    "price": 0,
+    "price": 100,
     "image": "images/tshirt.webp",
     "description": "Test",
     "sizes": ["S", "M", "L", "XL"],
+    "sizePrices": { "S": 100, "M": 150, "L": 180, "XL": 200 },
     "images": [
       "quran/quran-126-modern.webp",
       "images/blueCrystalTasbhe.png",
       "quran/quran-roman-script-modern.webp"
     ]
+
+    
   }
 ]

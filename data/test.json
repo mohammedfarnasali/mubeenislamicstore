@@ -1,0 +1,96 @@
+[
+  {
+    "id": "demo-001",
+    "name": "Kashish Attar 3ml",
+    "category": "Test",
+    "price": 60,
+    "image": "images/kashish.webp",
+    "description": "Luxury musk-infused eau de parfum for modern men.",
+    "badge": "New"
+  },
+  {
+    "id": "demo-002",
+    "name": "Rose Attar 6ml",
+    "category": "Test",
+    "price": 120,
+    "image": "images/rose.webp",
+    "description": "Pure rose attar with a long-lasting fragrance.",
+    "badge": "Best Seller"
+  },
+  {
+    "id": "demo-003",
+    "name": "Oud Attar 3ml",
+    "category": "Test",
+    "price": 199,
+    "image": "images/oud.webp",
+    "description": "Deep woody oud fragrance.",
+    "badge": "Sale 20% OFF"
+  },
+  {
+    "id": "demo-004",
+    "name": "Musk Attar 6ml",
+    "category": "Test",
+    "price": 150,
+    "image": "images/musk.webp",
+    "description": "Soft white musk attar.",
+    "badge": "Limited Stock",
+    "badgeColor": "red"
+  },
+  {
+    "id": "demo-005",
+    "name": "Amber Attar 3ml",
+    "category": "Test",
+    "price": 90,
+    "image": "images/amber.webp",
+    "description": "Warm amber attar.",
+    "badge": "Special Offer",
+    "badgeColor": "dark"
+  },
+  {
+    "id": "demo-006",
+    "name": "Jannat Attar 3ml",
+    "category": "Test",
+    "price": 110,
+    "image": "images/jannat.webp",
+    "description": "Fresh floral attar.",
+    "badge": "Not Available"
+  },
+  {
+    "id": "demo-007",
+    "name": "Sandal Attar 6ml",
+    "category": "Test",
+    "price": 130,
+    "image": "images/sandal.webp",
+    "description": "Classic sandalwood attar.",
+    "badge": "Out of Stock",
+    "available": false
+  },
+  {
+    "id": "demo-008",
+    "name": "Black Oud Attar 6ml",
+    "category": "Test",
+    "price": 250,
+    "image": "images/blackoud.webp",
+    "description": "Premium black oud attar.",
+    "available": false
+  },
+  {
+    "id": "demo-009",
+    "name": "Islamic Cap",
+    "category": "Test",
+    "price": 100,
+    "image": "images/cap.webp",
+    "description": "Soft cotton prayer cap.",
+    "badge": "New",
+    "sizes": ["S", "M", "L"],
+    "sizePrices": { "S": 100, "M": 120, "L": 140 }
+  },
+  {
+    "id": "demo-010",
+    "name": "Prayer Mat",
+    "category": "Test",
+    "price": 250,
+    "image": "images/janamaz.webp",
+    "description": "Soft padded prayer mat."
+  }
+]

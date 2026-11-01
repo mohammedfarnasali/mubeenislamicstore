@@ -40,8 +40,35 @@
   function sizesOf(p) {
     return p && Array.isArray(p.sizes) ? p.sizes.filter(Boolean).map(String) : [];
   }
-  function fmt(n) { return '\u20B9' + Number(n).toLocaleString('en-IN'); }
+  function fmt(n) { return '₹' + Number(n).toLocaleString('en-IN'); }
   function cssEsc(s) { return (window.CSS && CSS.escape) ? CSS.escape(String(s)) : String(s); }
+
+  /* ADDED (TASK 4): size-wise prices.
+     products.json:  "sizePrices": { "S": 100, "M": 150, "L": 180, "XL": 200 } */
+  function sizePriceOf(p, size) {
+    if (!p || !p.sizePrices || size == null || size === '') return null;
+    var v = Number(p.sizePrices[size]);
+    return isNaN(v) ? null : v;
+  }
+  function priceText(p, size) {
+    var exact = sizePriceOf(p, size);
+    if (exact !== null) return fmt(exact);
+    if (p && p.sizePrices && typeof p.sizePrices === 'object') {
+      var keys = sizesOf(p).length ? sizesOf(p) : Object.keys(p.sizePrices);
+      var vals = keys.map(function (k) { return Number(p.sizePrices[k]); })
+                     .filter(function (v) { return !isNaN(v); });
+      if (vals.length) {
+        var lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals);
+        return lo === hi ? fmt(lo) : 'From ' + fmt(lo) + ' (select a size)';
+      }
+    }
+    return fmt(p.price);
+  }
+  /* ADDED (TASK 1): same "unavailable" rule as index.html */
+  function isUnavailable(p) {
+    return !!p && (p.available === false ||
+      /not\s*available|unavailable|out\s*of\s*stock|sold\s*out/i.test(String(p.badge || '')));
+  }
 
   function toast(msg) {
     var t = document.getElementById('toast');
@@ -208,10 +235,17 @@
     setupPhotos(p);
     pm.cat.textContent = p.category || '';
     pm.name.textContent = p.name || '';
-    pm.price.textContent = fmt(p.price);
+    pm.price.textContent = priceText(p, current.size); // CHANGED (TASK 4): price follows the size
     pm.desc.textContent = p.description || '';
     pm.sizeErr.classList.add('hidden');
     pm.sizeNote.classList.add('hidden');
+
+    // ADDED (TASK 1): unavailable products cannot be added from the popup either
+    var na = isUnavailable(p);
+    pm.add.disabled = na;
+    pm.add.textContent = na ? 'Currently Not Available' : 'Add to Cart';
+    pm.add.classList.toggle('opacity-50', na);
+    pm.add.classList.toggle('cursor-not-allowed', na);
 
     pm.sizes.innerHTML = '';
     if (list.length) {
@@ -219,10 +253,13 @@
         var b = document.createElement('button');
         b.type = 'button';
         b.setAttribute('data-size', s);
-        b.textContent = s;
+        // CHANGED (TASK 4): the chip shows the size and, when prices differ, its price
+        var sp = sizePriceOf(p, s);
+        b.textContent = (sp !== null && p.sizePrices) ? (s + ' · ' + fmt(sp)) : s;
         b.addEventListener('click', function () {
           current.size = s;
           pm.sizeErr.classList.add('hidden');
+          pm.price.textContent = priceText(p, s); // CHANGED (TASK 4)
           paintChips();
         });
         pm.sizes.appendChild(b);
@@ -254,6 +291,7 @@
   function addFromModal() {
     if (!current) return;
     var p = current.p;
+    if (isUnavailable(p)) { toast('Sorry, this product is currently not available'); return; } // ADDED (TASK 1)
     if (sizesOf(p).length) {
       if (!current.size) {
         pm.sizeErr.classList.remove('hidden');
@@ -320,6 +358,7 @@
     var btn = e.target.closest('#productGrid [data-add]');
     if (!btn) return;
     var p = byId(btn.getAttribute('data-add'));
+    if (p && isUnavailable(p)) return; // ADDED (TASK 1): the store itself shows "not available"
     if (p && sizesOf(p).length) {
       e.preventDefault();
       e.stopImmediatePropagation();
@@ -351,7 +390,10 @@
       sel.appendChild(ph);
       list.forEach(function (s) {
         var o = document.createElement('option');
-        o.value = s; o.textContent = s;
+        o.value = s;
+        // CHANGED (TASK 4): show the price next to the size when it has its own price
+        var sp = sizePriceOf(p, s);
+        o.textContent = (sp !== null && p.sizePrices) ? (s + ' - ' + fmt(sp)) : s;
         sel.appendChild(o);
       });
       sel.value = (sizes[id] && list.indexOf(sizes[id]) > -1) ? sizes[id] : '';
@@ -363,6 +405,8 @@
       sel.addEventListener('change', function () {
         setSize(id, sel.value);
         paintSel();
+        // ADDED (TASK 4): recalculate the item price and totals for the new size
+        if (typeof window.refreshCartUI === 'function') window.refreshCartUI();
       });
       wrap.appendChild(lab);
       wrap.appendChild(sel);
@@ -403,8 +447,8 @@
     Object.keys(cart).forEach(function (id) {
       var p = byId(id);
       if (!p || !sizesOf(p).length || !sizes[id]) return;
-      var from = '\u2022 ' + p.name + '  \u00D7';
-      var to = '\u2022 ' + p.name + ' (Size: ' + sizes[id] + ')  \u00D7';
+      var from = '• ' + p.name + '  ×';
+      var to = '• ' + p.name + ' (Size: ' + sizes[id] + ')  ×';
       text = text.split(from).join(to);
     });
     return text;
