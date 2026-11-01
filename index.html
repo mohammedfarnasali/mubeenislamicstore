@@ -386,6 +386,11 @@
      image    : background photo, e.g. "banners/ramadan.webp" (optional).
                 Leave "" to get the green geometric design.
                 Best size: 1600 x 640 px (wide). Keep text area dark/plain.
+     video    : (optional) background VIDEO, e.g. "banners/ramadan.mp4". Silent, loops, plays by itself.
+                Use a short MP4 (H.264), 5-10 seconds, 720p, under 3 MB. If set, it is used instead of "image".
+     poster   : (optional) picture shown while the video loads, e.g. "banners/ramadan.webp"
+     duration : (optional) how long (in milliseconds) this banner stays before sliding, e.g. 8000.
+                A video banner waits for one full play of its video by default.
 
      WHERE "Shop Now" TAKES THE CUSTOMER (use only ONE of these, or none):
      category : opens that category, e.g. "Attar"  (must match a category name in products.json)
@@ -394,6 +399,20 @@
      (none)   : just scrolls to all products
   ====================================================== */
   const BANNERS = [
+
+  {
+  tagline:  "Ramadan Offers",
+  title:    "Up to 20% OFF",
+  subtitle: "On all attars",
+  duration: 10000,
+  button:   "Shop Now",
+  image:    "",
+  video:    "images/attars/WhatsApp.mp4",
+  poster:   "banners/ramadan.webp",
+  category: "Legacy Attars"
+  },
+
+
     {
       tagline:  "Barakah in every detail",
       title:    "Quran, Parey, Rehal Box, Seerat & Hadees",
@@ -893,7 +912,13 @@
 
     // Build slides
     track.innerHTML = BANNERS.map((b, i) => {
-      const bg = b.image
+      // ADDED (VIDEO BANNER): background video with a dark overlay so the white text stays readable
+      const bg = b.video
+        ? `<video src="${escapeHTML(b.video)}" ${b.poster ? `poster="${escapeHTML(b.poster)}"` : ''} data-bvideo="${i}"
+              muted loop playsinline preload="${i === 0 ? 'auto' : 'metadata'}" aria-hidden="true" tabindex="-1"
+              class="absolute inset-0 w-full h-full object-cover pointer-events-none"></video>
+           <div class="absolute inset-0 bg-gradient-to-t from-emerald-900/90 via-emerald-900/55 to-emerald-900/40"></div>`
+        : b.image
         ? `<img src="${escapeHTML(b.image)}" alt="" draggable="false" ${i === 0 ? '' : 'loading="lazy"'}
               class="absolute inset-0 w-full h-full object-cover" />
            <div class="absolute inset-0 bg-gradient-to-t from-emerald-900/85 via-emerald-900/45 to-emerald-900/30"></div>`
@@ -932,15 +957,43 @@
         d.classList.toggle('bg-white/60', i !== index);
       });
     }
+    /* ADDED (VIDEO BANNER): play only the video of the banner on screen, pause the others */
+    const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let shownIndex = -1;
+    function playCurrentVideo(restart) {
+      track.querySelectorAll('video[data-bvideo]').forEach(v => {
+        if (Number(v.dataset.bvideo) === index && !reduceMotion) {
+          if (restart) { try { v.currentTime = 0; } catch (e) {} }
+          const pr = v.play();
+          if (pr && pr.catch) pr.catch(() => {});
+        } else {
+          v.pause();
+        }
+      });
+    }
+    // How long the banner on screen stays: its "duration", or one full play of its video, or the normal interval
+    function slideDelay() {
+      const b = BANNERS[index] || {};
+      if (Number(b.duration) > 0) return Number(b.duration);
+      if (b.video) {
+        const v = track.querySelector('video[data-bvideo="' + index + '"]');
+        if (v && isFinite(v.duration) && v.duration > 0) return Math.max(v.duration * 1000 + 300, BANNER_INTERVAL_MS);
+        return 8000;
+      }
+      return BANNER_INTERVAL_MS;
+    }
+
     function goTo(i) {
       index = (i + total) % total;
       track.style.transform = `translateX(-${index * 100}%)`;
       paintDots();
+      if (shownIndex !== index) { shownIndex = index; playCurrentVideo(true); }   // ADDED (VIDEO BANNER)
     }
-    function stopAuto() { clearInterval(timer); timer = null; }
+    // CHANGED (VIDEO BANNER): a timer per banner (instead of one fixed interval) so a video banner is not cut off
+    function stopAuto() { clearTimeout(timer); timer = null; }
     function startAuto() {
       stopAuto();
-      if (total > 1) timer = setInterval(() => goTo(index + 1), BANNER_INTERVAL_MS);
+      if (total > 1) timer = setTimeout(() => { goTo(index + 1); startAuto(); }, slideDelay());
     }
 
     if (total > 1) {
@@ -1001,8 +1054,19 @@
 
     // Pause when the tab is hidden
     document.addEventListener('visibilitychange', () => {
-      if (document.hidden) stopAuto(); else startAuto();
+      if (document.hidden) { stopAuto(); track.querySelectorAll('video').forEach(v => v.pause()); }   // CHANGED (VIDEO BANNER): also pause the video
+      else { startAuto(); playCurrentVideo(false); }
     });
+
+    // ADDED (VIDEO BANNER): pause the video (and save battery/data) while the banner is scrolled out of view
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver((entries) => {
+        entries.forEach(en => {
+          if (en.isIntersecting) { playCurrentVideo(false); if (!dragging) startAuto(); }
+          else { stopAuto(); track.querySelectorAll('video').forEach(v => v.pause()); }
+        });
+      }, { threshold: 0.25 }).observe(viewport);
+    }
 
     // Don't treat a swipe as a button click
     track.addEventListener('click', (e) => {
