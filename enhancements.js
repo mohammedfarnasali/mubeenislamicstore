@@ -31,6 +31,12 @@
     try { localStorage.setItem(SIZE_KEY, JSON.stringify(s)); } catch (e) {}
   }
   function getCart() { return readJSON(CART_KEY); }
+  // ADDED (CART FIX): cart keys are "productId::size" for products with sizes, "productId" otherwise
+  function keyParts(key) {
+    var i = String(key).indexOf('::');
+    return i > -1 ? { id: String(key).slice(0, i), size: String(key).slice(i + 2) }
+                  : { id: String(key), size: '' };
+  }
   function byId(id) {
     for (var i = 0; i < PRODUCTS.length; i++) {
       if (String(PRODUCTS[i].id) === String(id)) return PRODUCTS[i];
@@ -230,7 +236,8 @@
     var list = sizesOf(p);
     var cart = getCart();
     var saved = getSizes()[p.id];
-    current = { p: p, size: (cart[p.id] && saved && list.indexOf(saved) > -1) ? saved : '' };
+    // CHANGED (CART FIX): the customer picks the size each time; every size becomes its own cart line
+    current = { p: p, size: '' };
 
     setupPhotos(p);
     pm.cat.textContent = p.category || '';
@@ -266,9 +273,15 @@
       });
       paintChips();
       pm.sizeBox.classList.remove('hidden');
-      if (cart[p.id] && saved) {
-        pm.sizeNote.textContent = 'This item is already in your cart in size ' + saved +
-          '. Adding it again with a different size will change that item to the new size.';
+      // CHANGED (CART FIX): show which sizes of this product are already in the cart
+      var inCart = [];
+      Object.keys(cart).forEach(function (k) {
+        var parts = keyParts(k);
+        if (parts.id === String(p.id) && parts.size) inCart.push(parts.size + ' ×' + cart[k]);
+      });
+      if (inCart.length) {
+        pm.sizeNote.textContent = 'Already in your cart: ' + inCart.join(', ') +
+          '. Each size is added as a separate item.';
         pm.sizeNote.classList.remove('hidden');
       }
     } else {
@@ -373,6 +386,8 @@
     var sizes = getSizes();
     box.querySelectorAll('[data-remove]').forEach(function (rm) {
       var id = rm.getAttribute('data-remove');
+      // CHANGED (CART FIX): lines that already have a size show it as text, so only an old line without a size gets the dropdown
+      if (id.indexOf('::') !== -1) return;
       var p = byId(id);
       var list = sizesOf(p);
       if (!list.length) return;
@@ -403,10 +418,9 @@
       }
       paintSel();
       sel.addEventListener('change', function () {
-        setSize(id, sel.value);
         paintSel();
-        // ADDED (TASK 4): recalculate the item price and totals for the new size
-        if (typeof window.refreshCartUI === 'function') window.refreshCartUI();
+        // CHANGED (CART FIX): move this old line to "id::size" (price and totals update automatically)
+        if (sel.value && typeof window.setCartLineSize === 'function') window.setCartLineSize(id, sel.value);
       });
       wrap.appendChild(lab);
       wrap.appendChild(sel);
@@ -418,10 +432,12 @@
 
   /* ---------------- block checkout if a size is missing ---------------- */
   function missingSizeItems() {
-    var cart = getCart(), sizes = getSizes(), out = [];
-    Object.keys(cart).forEach(function (id) {
-      var p = byId(id), list = sizesOf(p);
-      if (list.length && list.indexOf(sizes[id]) === -1) out.push(p);
+    var cart = getCart(), out = [];
+    Object.keys(cart).forEach(function (key) {
+      // CHANGED (CART FIX): a line is missing its size when it is a sized product without "::size"
+      var parts = keyParts(key);
+      var p = byId(parts.id), list = sizesOf(p);
+      if (list.length && list.indexOf(parts.size) === -1 && out.indexOf(p) === -1) out.push(p);
     });
     return out;
   }

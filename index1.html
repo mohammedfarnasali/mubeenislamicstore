@@ -340,6 +340,12 @@
 <script>
 (function () {
   "use strict";
+   /* ADDED: always start at the top after a refresh ... */
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  window.scrollTo(0, 0);
+  window.addEventListener('beforeunload', () => window.scrollTo(0, 0));
+  window.addEventListener('pageshow', (e) => { if (e.persisted) window.scrollTo(0, 0); });
+
 
   /* ======================================================
      CONFIGURATION
@@ -355,6 +361,12 @@
 
   // Minimum order value required to check out (in ₹)  
   const MIN_ORDER_VALUE = 199;
+
+  // ADDED (TASK 3): in the "All" tab, how many products to show per category before the "Show more" button
+  const ALL_VIEW_LIMIT = 4;
+
+  // ADDED (TASK 4): same storage key that enhancements.js uses to remember the chosen size of each product
+  const SIZE_STORE_KEY = 'mubeen_sizes';
 
   // ADDED: order slip PDF settings
   const SHOP_PHONE = "6301284561";
@@ -464,6 +476,80 @@
     return '₹' + Number(n).toLocaleString('en-IN');
   }
 
+  /* ---------------- ADDED (TASK 4): size-wise prices ----------------
+     In products.json a product can have:
+        "sizes": ["S","M","L","XL"],
+        "sizePrices": { "S": 100, "M": 150, "L": 180, "XL": 200 }
+     Products without "sizePrices" keep using the normal "price". */
+  function getSavedSizes() {
+    try {
+      const raw = localStorage.getItem(SIZE_STORE_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch (e) {
+      return {};
+    }
+  }
+  function sizePriceList(p) {
+    if (!p || !p.sizePrices || typeof p.sizePrices !== 'object') return [];
+    const keys = Array.isArray(p.sizes) && p.sizes.length ? p.sizes.map(String) : Object.keys(p.sizePrices);
+    return keys
+      .map(k => Number(p.sizePrices[k]))
+      .filter(v => !isNaN(v));
+  }
+  function minSizePrice(p) {
+    const list = sizePriceList(p);
+    return list.length ? Math.min.apply(null, list) : Number(p.price);
+  }
+  // Price of one piece in the cart: the chosen size's price, otherwise the lowest size price
+  function unitPrice(p) {
+    if (p && p.sizePrices && typeof p.sizePrices === 'object') {
+      const s = getSavedSizes()[p.id];
+      if (s != null && p.sizePrices[s] !== undefined && !isNaN(Number(p.sizePrices[s]))) {
+        return Number(p.sizePrices[s]);
+      }
+      return minSizePrice(p);
+    }
+    return Number(p.price);
+  }
+  // Price text on the product card: "From ₹100" when sizes have different prices
+  function priceLabel(p) {
+    const list = sizePriceList(p);
+    if (list.length && Math.min.apply(null, list) !== Math.max.apply(null, list)) {
+      return 'From ' + formatPrice(Math.min.apply(null, list));
+    }
+    return formatPrice(list.length ? list[0] : p.price);
+  }
+
+  /* ---------------- ADDED (TASK 1): product badge (ribbon on the card) ----------------
+     In products.json add  "badge": "New"  /  "Best Seller"  /  "Not Available"  /  anything you like.
+     Optional: "badgeColor": "green" | "gold" | "red" | "blue" | "dark"   (otherwise chosen automatically)
+     "Not Available" / "Out of Stock" / "Sold Out" (or "available": false) also disables the Add button. */
+  function isUnavailable(p) {
+    return !!p && (p.available === false ||
+      /not\s*available|unavailable|out\s*of\s*stock|sold\s*out/i.test(String(p.badge || '')));
+  }
+  function badgeHTML(p) {
+    let text = String(p.badge == null ? '' : p.badge).trim();
+    if (!text && p.available === false) text = 'Not Available';
+    if (!text) return '';
+    const colors = {
+      green: 'bg-emerald-700 text-white',
+      gold:  'bg-gold-600 text-emerald-900',
+      red:   'bg-red-600 text-white',
+      blue:  'bg-blue-600 text-white',
+      dark:  'bg-ink text-cream'
+    };
+    let key = String(p.badgeColor || '').toLowerCase();
+    if (!colors[key]) {
+      if (isUnavailable(p)) key = 'red';
+      else if (/new/i.test(text)) key = 'gold';
+      else if (/best|popular|top|hot/i.test(text)) key = 'green';
+      else if (/sale|offer|off|discount|%/i.test(text)) key = 'blue';
+      else key = 'dark';
+    }
+    return `<span class="absolute top-2 left-0 z-10 max-w-[75%] truncate rounded-r-full px-3 py-1 text-[10px] sm:text-xs font-bold uppercase tracking-wide shadow-card ${colors[key]}">${escapeHTML(text)}</span>`;
+  }
+
   function loadCart() {
     try {
       const raw = localStorage.getItem('noor_cart');
@@ -485,7 +571,8 @@
     return Object.entries(cart)
       .map(([id, qty]) => {
         const product = PRODUCTS.find(p => p.id === id);
-        return product ? { product, qty } : null;
+        // CHANGED (TASK 4): the price follows the chosen size
+        return product ? { product: Object.assign({}, product, { price: unitPrice(product) }), qty } : null;
       })
       .filter(Boolean);
   }
@@ -600,10 +687,17 @@
     el.emptyState.classList.remove('flex');
     el.grid.classList.remove('hidden');
 
-    el.grid.innerHTML = results.map(productCardHTML).join('');
+    // CHANGED (TASK 3): the "All" tab (no search, no shared link) shows a few products from every category
+    const groupAll = activeCategory === 'All' && !searchQuery.trim() && !sharedProductId;
+    el.grid.innerHTML = groupAll
+      ? groupedProductsHTML(results)
+      : results.map(productCardHTML).join('');
 
     el.grid.querySelectorAll('[data-add]').forEach(btn => {
       btn.addEventListener('click', () => {
+        // ADDED (TASK 1): unavailable products cannot be added
+        const prod = PRODUCTS.find(x => String(x.id) === String(btn.dataset.add));
+        if (prod && isUnavailable(prod)) { showToast('Sorry, this product is currently not available'); return; }
         addToCart(btn.dataset.add);
         btn.classList.add('pop');
         const original = btn.innerHTML;
@@ -615,14 +709,71 @@
     el.grid.querySelectorAll('[data-share]').forEach(btn => {
       btn.addEventListener('click', () => shareProduct(btn.dataset.share));
     });
+
+    // ADDED (TASK 3): "Show more" opens that category's tab
+    el.grid.querySelectorAll('[data-showmore]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        activeCategory = btn.dataset.showmore;
+        sharedProductId = null;
+        renderCategories();
+        renderProducts();
+        scrollToListTop();
+        const activePill = el.categoryRow.querySelector('[aria-selected="true"]');
+        if (activePill && activePill.scrollIntoView) {
+          activePill.scrollIntoView({ inline: 'center', block: 'nearest' });
+        }
+      });
+    });
+  }
+
+  // ADDED (TASK 3): builds the "All" tab -> category heading, first N products, "Show more" button
+  function groupedProductsHTML(list) {
+    const order = [];
+    const groups = {};
+    list.forEach(p => {
+      if (!groups[p.category]) { groups[p.category] = []; order.push(p.category); }
+      groups[p.category].push(p);
+    });
+
+    return order.map(cat => {
+      const items = groups[cat];
+      const shown = items.slice(0, ALL_VIEW_LIMIT);
+      const more = items.length - shown.length;
+      const catAttr = escapeHTML(cat).replace(/"/g, '&quot;');
+      return `
+        <div class="col-span-full flex items-baseline justify-between pt-4 mt-1 border-t border-sand first:border-t-0 first:pt-0 first:mt-0">
+          <h3 class="font-display text-xl sm:text-2xl text-emerald-900">${escapeHTML(cat)}</h3>
+          <span class="text-xs sm:text-sm text-ink-soft">${items.length} item${items.length === 1 ? '' : 's'}</span>
+        </div>
+        ${shown.map(productCardHTML).join('')}
+        ${more > 0 ? `
+        <div class="col-span-full flex justify-center">
+          <button type="button" data-showmore="${catAttr}"
+            class="rounded-full border border-emerald-900 text-emerald-900 text-sm font-semibold px-6 py-2.5 hover:bg-emerald-900 hover:text-cream transition-colors">
+            Show more ${escapeHTML(cat)} (${more} more)
+          </button>
+        </div>` : ''}
+      `;
+    }).join('');
+  }
+
+  // ADDED (TASK 3): scroll to the top of the product list
+  function scrollToListTop() {
+    const main = document.querySelector('main');
+    const header = document.querySelector('header');
+    if (!main) return;
+    const top = main.getBoundingClientRect().top + window.scrollY - (header ? header.offsetHeight : 0) - 8;
+    window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
   }
 
   function productCardHTML(p) {
+    const na = isUnavailable(p); // ADDED (TASK 1)
     return `
       <article class="group bg-white rounded-2xl shadow-card overflow-hidden flex flex-col">
         <div class="relative aspect-square overflow-hidden bg-sand">
           <img src="${p.image}" alt="${escapeHTML(p.name)}" loading="lazy"
-            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 ${na ? 'grayscale opacity-70' : ''}" />
+          ${badgeHTML(p)}
           <button data-share="${p.id}" aria-label="Share ${escapeHTML(p.name)}"
             class="absolute top-2 right-2 grid place-items-center w-8 h-8 rounded-full bg-white/90 text-emerald-900 shadow-card hover:bg-white">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>
@@ -633,12 +784,17 @@
           <h3 class="font-semibold text-sm sm:text-[15px] text-ink leading-snug line-clamp-2 mb-1">${escapeHTML(p.name)}</h3>
           <p class="text-xs text-ink-soft mb-3 hidden sm:block">${escapeHTML(shortDesc(p.description))}</p>
           <div class="mt-auto flex items-center justify-between gap-2">
-            <span class="font-bold text-emerald-900 text-sm sm:text-base">${formatPrice(p.price)}</span>
+            <span class="font-bold text-emerald-900 text-sm sm:text-base">${priceLabel(p)}</span>
+            ${na ? `
+            <button data-add="${p.id}" aria-disabled="true"
+              class="flex items-center gap-1.5 rounded-full bg-gray-300 text-gray-600 text-xs sm:text-sm font-semibold px-3 py-2 cursor-not-allowed">
+              Unavailable
+            </button>` : `
             <button data-add="${p.id}"
               class="flex items-center gap-1.5 rounded-full bg-emerald-900 text-cream text-xs sm:text-sm font-semibold px-3 py-2 hover:bg-emerald-700 transition-colors">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
               Add
-            </button>
+            </button>`}
           </div>
         </div>
       </article>
@@ -945,6 +1101,9 @@
       el.minOrderNotice.classList.add('hidden');
     }
   }
+
+  // ADDED (TASK 4): lets enhancements.js refresh the cart (totals) when a size is changed inside the cart
+  window.refreshCartUI = updateCartUI;
   
   /* ---------------- Cart drawer open/close ---------------- */
   function openCart() {
@@ -1004,8 +1163,9 @@
     const address = document.getElementById('custAddress').value.trim();
     const notes = document.getElementById('custNotes').value.trim();
 
+    // CHANGED (TASK 2): a clickable product link is added below each product line
     const orderLines = items.map(({ product, qty }) =>
-      `• ${product.name}  ×${qty}  —  ${formatPrice(product.price * qty)}`
+      `• ${product.name}  ×${qty}  —  ${formatPrice(product.price * qty)}\n  Link: ${location.origin}/api/p?id=${encodeURIComponent(product.id)}`
     ).join('\n');
 
     const orderSummary =
